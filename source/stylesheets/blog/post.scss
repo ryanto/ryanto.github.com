@@ -1,0 +1,52 @@
+@import "compass/css3/border-radius";
+
+@mixin fonts {
+  font-family: Georgia,Arial,sans-serif;
+}
+
+.blog .post {
+  .cover {
+    margin: 0 1em 1em 0;
+  }
+
+  h2, h3, h4, h5, h6 {
+    text-shadow: 1px 1px #ccc;
+
+    a, .label, &.date {
+      text-shadow: none;
+      text-decoration: none;
+    }
+  }
+
+  a {
+    color: #238E23;
+    text-decoration: underline;
+
+    &.button {
+      text-decoration: none;
+    }
+  }
+
+  p {
+    @include fonts;
+    font-size: 1.1em;
+  }
+
+  ul {
+    @include fonts;
+    padding-left: 2em;
+  }
+
+  p > code, li > code {
+    @include fonts;
+    font-weight: normal;
+  }
+
+  pre > code {
+    margin-bottom: 1.25em;
+    padding: 1em;
+    font-weight: normal;
+    line-height: 1.2em;
+    @include border-radius(3px);
+  }
+}

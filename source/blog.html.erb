@@ -1,0 +1,37 @@
+---
+title: Blog
+---
+
+<div class="row">
+  <div class="posts small-12 columns">
+
+    <% blog.articles[0...5].each_with_index do |article, i| %>
+      <article class="post <%= (i == 0) ? 'first' : '' %>">
+        <h3 class="title">
+          <a href="<%= article.url %>"><%= article.title %></a>
+        </h3>
+
+        <h6 class="date">
+          From <%= article.date.strftime('%b %e %Y') %>
+        </h6>
+
+        <div class="summary">
+          <% if article.data.cover %>
+            <img src="<%= article.url %><%= article.data.cover %>"
+              width="200"
+              class="left cover" />
+          <% end %>
+
+          <%= article.summary(250, '>>') %>
+
+          <a class="nice radius button small success" 
+            href="<%= article.url %>">read on &raquo;</a>
+
+          <br class="clear" />
+        </div>
+      </article>
+      <hr />
+    <% end %>
+
+  </div>
+</div>

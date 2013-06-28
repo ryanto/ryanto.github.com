@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+
+    <title><%= current_page.data.title || "CodingValue Blog" %></title>
+
+    <link href='http://fonts.googleapis.com/css?family=Cabin+Condensed:400,700'
+      rel='stylesheet' type='text/css'>
+
+    <link rel="icon" type="image/png" href="/images/icon.png" />
+
+    <%= stylesheet_link_tag "all" %>
+    <%= javascript_include_tag  "all" %>
+  </head>
+
+  <body class="<%= page_classes %>">
+    <nav>
+      <ul class="top">
+        <li>
+          <a href="/"
+            >CodingValue</a>
+        </li>
+        <li>
+          <a href="#"
+            >Projects</a>
+        </li>
+        <li>
+          <a href="/blog"
+            >Blog</a>
+        </li>
+        <li>
+          <a href="#"
+            >Contact</a>
+        </li>
+      </ul>
+
+      <br class="clear" />
+    </nav>
+
+    <div class="row">
+      <div class="post small-12 large-9 columns">
+        <% if current_article %>
+          <h1><%= current_article.title  %></h1>
+        <% end %>
+          
+        <% if current_article && current_article.data.cover %>
+          <div>
+            <img src="<%= current_article.data.cover %>"
+              width="300"
+              class="left cover" />
+
+            <%= yield %>
+            <br class="clear" />
+          </div>
+        <% else %>
+          <%= yield %>
+        <% end %>
+      </div>
+
+      <div class="hide-for-small large-3 columns">
+        <div class="radius side-panel panel">
+          <div class="coding-value">
+
+            <div class="blog-of">
+              The Blog of
+            </div>
+
+            <a href="/"
+              class="coding-value-link"
+                >Coding Value</a>
+
+            <p class="what-we-do">
+              Coding Value develops rich client side applications and
+              powerful backend services. We use EmberJS, Ruby on Rails,
+              NodeJS, and many other fun technologies.
+            </p>
+      
+            <a href="#" class="get-in-touch small success radius
+              button" >Get In Touch</a>
+          </div>
+
+          <% if current_article %>
+            <hr />
+
+            <div class="bio">
+              <div class="article-by">
+                Article By
+              </div>
+
+              <div>
+                <img src="/images/ryan.png"
+                  class="left picture"
+                  height="50" width="50"
+                  alt="Ryan Toronto">
+
+                <div class="centered">
+                  <span class="author">Ryan Toronto</span>
+                  <a class="email"
+                    href="mailto:ryanto@gmail.com">ryanto@gmail.com</a>
+                </div>
+              </div>
+            </div>
+          <% end %>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      hljs.initHighlightingOnLoad();
+      $(document).foundation();
+    </script>
+  </body>
+</html>
