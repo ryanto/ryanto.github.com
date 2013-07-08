@@ -1,10 +1,10 @@
 ---
-title:  Ember.JS Mixins
+title:  EmberJS Mixins
 cover: cover.png
 published: true
 ---
 
-In Ember.JS the Mixin class can create objects whose properties
+In EmberJS the Mixin class can create objects whose properties
 and functions can be shared amongst other classes and instances. This
 allows for an easy way to share behavior between objects as well as
 design objects that may need multiple inheritance.
