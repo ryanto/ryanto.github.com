@@ -12,6 +12,7 @@
 ###
 
 page "/blog.html", :layout => :blog
+page "/blog/feed.xml", :layout => false
 
 # Per-page layout changes:
 #
