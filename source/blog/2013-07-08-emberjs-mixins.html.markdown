@@ -53,8 +53,8 @@ App.ProfileController = Ember.ObjectController.extend(
   App.CurrentUserMixin, {
 
   isCurrentUsersProfile: function() {
-    return this.get('currentUser') === this.get('model');
-  }.property('currentUser', 'model');
+    return this.get('currentUser.model') === this.get('model');
+  }.property('currentUser.model', 'model');
 });
 </code></pre>
 
