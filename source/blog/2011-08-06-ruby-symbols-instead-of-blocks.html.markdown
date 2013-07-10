@@ -1,7 +1,7 @@
 ---
 title: Ruby Symbols Instead of Blocks
 cover: cover.png
-published: false
+published: true
 ---
 
 Every wonder why this works? It's straight forward and easy to read, but how
