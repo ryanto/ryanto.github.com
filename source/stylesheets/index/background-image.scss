@@ -1,0 +1,37 @@
+// only show the background image and floating panel when the
+// screen is over 768 pixels
+@media only screen and (min-width: 768px) {
+  .index {
+    background: url(/images/backgrounds/bg1.jpg) no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+
+    .empty {
+      display: block;
+      height: 80%;
+
+      .panel {
+        background-color: rgba(255,255,255,0.9);
+        position: fixed;
+        top: 20%;
+        right: 10%;
+        width: 500px;
+        overflow: auto;
+        z-index: 2;
+      }
+    }
+
+    .whitespace {
+      position: relative;
+      background-color: white;
+      z-index: 3;
+    }
+  }
+}
+
+.empty .panel {
+  margin: 0;
+
+}

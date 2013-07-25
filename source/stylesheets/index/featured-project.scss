@@ -1,0 +1,38 @@
+@import "compass/css3/text-shadow";
+@import "compass/css3/border-radius";
+
+section.featured-project {
+  padding: 1em 0;
+
+  h4.featured-project { 
+    @include text-shadow(1px 1px white);
+  }
+
+  .about {
+    padding: 0.1em 0.5em;
+    color: white;
+    @include border-radius(3px);
+    background-color: rgba(0,0,0,0.5);
+
+    .name {
+      color: white;
+    }
+  }
+
+  background-image: url(/images/garagesocial/featured-background.png);
+  background-size: 800px 200px;
+  background-repeat: no-repeat;
+
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+
+  .row {
+    padding-top: 0;
+  }
+
+  .technologies-used {
+    text-align: center;
+  }
+}
