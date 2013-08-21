@@ -1,0 +1,26 @@
+section.about {
+  padding-top: 2em;
+
+  ul.features li {
+    font-size: 1.1em;
+    line-height: 1.4em;
+    margin: 1em 0;
+  }
+
+  img.what-we-do,
+  img.process,
+  img.technologies {
+    vertical-align: bottom;
+  }
+}
+
+section.technologies {
+  padding-bottom: 1em;
+}
+
+.index section.projects {
+  h3.center, h4.center {
+    text-align: center;
+  }
+}
+
