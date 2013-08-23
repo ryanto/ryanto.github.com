@@ -1,26 +1,19 @@
-// only show the background image and floating panel when the
-// screen is over 768 pixels
-@media only screen and (min-width: 768px) {
+@import "compass/css3/border-radius";
+
+// tablets and up
+@media only screen and (min-device-width: 768px) and (min-width: 570px)  {
   .index {
-    background: url(/images/backgrounds/bg1.jpg) no-repeat center center fixed; 
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-
     .empty {
-      display: block;
-      height: 80%;
+      background: url(/images/backgrounds/bg1.jpg);
+      background-repeat: no-repeat;
+      background-position: center center;
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      -o-background-size: cover;
+      background-size: cover;
 
-      .panel {
-        background-color: rgba(255,255,255,0.9);
-        position: fixed;
-        top: 20%;
-        right: 10%;
-        width: 500px;
-        overflow: auto;
-        z-index: 2;
-      }
+      display: block;
+      position: relative;
     }
 
     .whitespace {
@@ -31,7 +24,39 @@
   }
 }
 
-.empty .panel {
-  margin: 0;
+// only tables tablets 
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+  .index .empty {
+    height: 300px;
+  }
 
+  .conversation.panel {
+    position: absolute;
+    bottom: 0;
+    overflow: auto;
+    z-index: 2;
+  }
+}
+
+// large screens
+@media only screen and (min-device-width: 1025px) and (min-width: 570px) {
+  .index .empty {
+    height: 80%;
+    background-attachment: fixed;
+  }
+
+  .converstation.panel {
+    @include border-radius(3px);
+    background-color: rgba(255,255,255,0.9);
+    position: fixed;
+    top: 20%;
+    right: 10%;
+    width: 500px;
+    overflow: auto;
+    z-index: 2;
+  }
+}
+
+.converstation.panel {
+  margin: 0;
 }
