@@ -1,16 +1,15 @@
 jQuery(document).ready(function($) {
   var scrollTo = function(name) {
     return function() {
-      event.preventDefault();
-      return $.scrollTo(
-        $(name),
-        500,
-        {
-          offset: {
-            top: -44
-          }
-        }
-      );
+      var element = $(name),
+          options = {
+            offset: { top: -44 }
+          };
+
+      if (element.length > 0) {
+        event.preventDefault();
+        return $.scrollTo(element, 500, options);
+      }
     };
   };
 

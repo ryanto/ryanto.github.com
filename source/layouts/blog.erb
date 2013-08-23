@@ -16,35 +16,14 @@
   </head>
 
   <body class="<%= page_classes %>">
-    <nav>
-      <ul class="top">
-        <li>
-          <a href="/"
-            >CodingValue</a>
-        </li>
-        <li>
-          <a href="#"
-            >Projects</a>
-        </li>
-        <li>
-          <a href="/blog"
-            >Blog</a>
-        </li>
-        <li>
-          <a href="mailto:hi@codingvalue.com"
-            >Contact</a>
-        </li>
-      </ul>
-
-      <br class="clear" />
-    </nav>
+    <%= partial "partials/header" %>
 
     <div class="row">
       <div class="post small-12 large-9 columns">
         <% if current_article %>
           <h1><%= current_article.title  %></h1>
         <% end %>
-          
+
         <% if current_article && current_article.data.cover %>
           <div>
             <img src="<%= current_article.data.cover %>"
@@ -107,6 +86,8 @@
         </div>
       </div>
     </div>
+
+    <%= partial "partials/footer" %>
 
     <script type="text/javascript">
       hljs.initHighlightingOnLoad();

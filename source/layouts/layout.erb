@@ -15,7 +15,10 @@
   </head>
 
   <body class="<%= page_classes %>">
+
+    <%= partial "partials/header" %>
     <%= yield %>
+    <%= partial "partials/footer" %>
 
     <%= javascript_include_tag  "all" %>
     <script>
