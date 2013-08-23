@@ -1,13 +1,38 @@
+@import "compass/css3/border-radius";
+
 .blog_index {
   .post {
-    .title {
-      margin-bottom: 0;
-    }
+    border-bottom: 1px solid #ccc;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    height: 20em;
 
-    .button {
-      color: white;
-    }
+    .about {
+      width: 100%;
+      padding: 0.5em 1em;
+      margin-top: 2em;
 
+      @include border-radius(3px);
+
+      background-color: rgba(200,200,200,.7);
+
+      .title a {
+         -webkit-text-stroke: 1px black;
+         color: white;
+         text-shadow:
+             3px 3px 0 #000,
+           -1px -1px 0 #000,  
+            1px -1px 0 #000,
+            -1px 1px 0 #000,
+             1px 1px 0 #000;
+      }
+
+      .summary {
+        //color: white;
+      }
+
+    }
   }
 }
 

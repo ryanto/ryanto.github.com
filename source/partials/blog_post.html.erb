@@ -1,0 +1,16 @@
+<div class="post-header"
+  style="background-image: url(<%= "#{current_article.url}#{current_article.data.cover}" %>);" >
+
+  <h1 class="title">
+    <a href="<%= current_article.url %>"
+      ><%= current_article.title %></a>
+  </h1>
+
+</div>
+
+<div class="post-content row">
+  <div class="small-12 columns">
+    <h2><%= current_article.title %></h2>
+    <%= current_article.body %>
+  </div>
+</div>
