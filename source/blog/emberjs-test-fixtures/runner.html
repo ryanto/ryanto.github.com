@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>EmberJS Testing</title>
+  <link rel="stylesheet" 
+    href="http://cdnjs.cloudflare.com/ajax/libs/qunit/1.11.0/qunit.min.css">
+</head>
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+
+  <script type="text/javascript"
+    src="http://cdnjs.cloudflare.com/ajax/libs/qunit/1.11.0/qunit.min.js"></script>
+  <script type="text/javascript"
+    src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.js"></script>
+  <script type="text/javascript"
+    src="http://cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.0.0/handlebars.min.js"></script>
+
+  <script type="text/javascript"
+    src="http://builds.emberjs.com/ember-1.0.0-rc.7.js"></script>
+  <script type="text/javascript"
+    src="http://cdnjs.cloudflare.com/ajax/libs/ember-data.js/0.13.0/ember-data-latest.js"></script>
+
+  <script type="text/x-handlebars" data-template-name="post">
+    <h1>{{title}}</h1>
+  </script>
+
+  <script type="text/javascript">
+    App = Ember.Application.create({
+      rootElement: '#qunit-fixture'
+    });
+
+    App.Store = DS.Store.extend({
+      adapter: DS.FixtureAdapter
+    });
+
+    App.Router.map(function() {
+      this.resource("post", { path: '/posts/:post_id' });
+    });
+
+    App.Post = DS.Model.extend({
+      title: DS.attr('string')
+    });
+
+    App.setupForTesting();
+
+    App.Post.FIXTURES = [{
+      id: 1,
+      title: "Hello World Test Post"
+    }];
+
+    Ember.Test.registerHelper('assertExists', function(app, selector, times) {
+      if (!times) { 
+        times = 1;
+      }
+
+      return wait()
+        .find(selector)
+        .then(function(element) {
+          equal(element.length, times, "found " + selector + " " + times + "  times");
+        });
+    });
+
+    module("Post Page", {
+      setup: function() {
+        App.reset();
+        App.injectTestHelpers();
+      }
+    });
+
+    test("should display the post title", function() {
+      visit("/posts/1")
+        .assertExists("h1:contains('Hello World Test Post')");
+    });
+  </script>
+</body>
+</html>

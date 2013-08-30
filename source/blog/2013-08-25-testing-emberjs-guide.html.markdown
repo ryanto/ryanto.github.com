@@ -25,3 +25,4 @@ so you and your team to reap the benefits of test driven development.
 * [Setting up your EmberJS Application for Testing](/blog/emberjs-testing-setup)
 * [High Level Integration Tests for EmberJS](/blog/emberjs-integration-testing)
 * [Writing Test Helpers in EmberJS](/blog/emberjs-test-helpers)
+* [Faking API Calls with Test Fixtures](/blog/emberjs-test-fixtures)
