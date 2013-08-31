@@ -2,6 +2,7 @@
 title: Faking API Calls with Test Fixtures
 published: true
 cover: cover.png
+cover_position: top center
 ---
 
 Most Ember applications are going to rely on a back end service for
