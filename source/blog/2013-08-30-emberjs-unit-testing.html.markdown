@@ -1,6 +1,6 @@
 ---
 title: Unit Testing EmberJS Objects
-published: false
+published: true
 cover: cover.png
 ---
 
@@ -41,8 +41,7 @@ outline the behavior of our function.
       equal(Ember.String.titleize("hello world"), "Hello World", "titleized sentence");
     });
 
-We can begin writing our function now. Once these tests pass we know we
-have written the correct code.
+We can begin writing our function now. 
 
     Ember.String.titleize = function(string) {
       return string
@@ -51,7 +50,7 @@ have written the correct code.
         .join(" ");
     };
 
-And our tests go green.
+Once these tests pass we know we have written the correct code.
 
 ### Dependant Properties
 
@@ -79,7 +78,7 @@ will do a bunch of checks before attempting to turn on.
       }
 
 Simple enough, we check to make sure we have gas in the tank and air in
-the tires before turning on. If not, we return false. How are we going
+the tires before turning on. If not, we exit the function. How are we going
 to unit test this function?
 
 Well, we could create a car, give it a bunch of tires, setup a gas tank,
@@ -137,10 +136,10 @@ tire has air.
 The above technique is called stubbing. Instead of relying on another
 function we force its value in the test. Since JavaScript is a dynamic
 and reflective language that allows for modifications to objects at
-runtime you can do this sort of thing by hand as we did in the example
+runtime this sort of thing by hand as we did in the example
 above. However, there is an excellent library called
-[Sinon.JS](http://sinonjs.org/) that has an excellent API, and many
-utility functions, that make stubbing, mocking, and spying a breeze.
+[Sinon.JS](http://sinonjs.org/) that has an easy to use API and many
+utility functions that make stubbing, mocking, and spying a breeze.
 
 In the next section we will continue to discuss unit testing, but focus
 on how we can use these tests to make sure our controllers are

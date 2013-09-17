@@ -1,6 +1,6 @@
 ---
 title: Unit Testing EmberJS Controllers
-published: false
+published: true
 cover: cover.png
 ---
 
