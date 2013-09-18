@@ -10,10 +10,11 @@ applications. Having tests in large applications is a great way to
 understand requirements, layout code correctly, and prevent regressions
 and bugs as new features are added.
 
-Testing large JavaScript applications that have many
-asynchronous parts has always been a little difficult. Of course there
-are ways to disable these asynchronous calls for the purpose of testing,
-but that quickly leads to problems and unintended changes in behavior.
+Testing large JavaScript applications has always been a little
+difficult. This could be because having to deal with asynchronous behavior
+inside a test suite adds a layer of complexity. The last thing you worry
+about is pausing and continuing a test suite while asynchronous calls
+complete.
 
 EmberJS makes testing easy by treating your test cases as first
 class citizens. Ember is aware of the problems driven from testing
