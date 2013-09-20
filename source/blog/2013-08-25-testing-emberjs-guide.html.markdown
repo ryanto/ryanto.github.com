@@ -29,4 +29,4 @@ so you and your team to reap the benefits of test driven development.
 * [Faking API Calls with Test Fixtures](/blog/emberjs-test-fixtures)
 * [Unit Testing EmberJS Objects](/blog/emberjs-unit-testing)
 * [Unit Testing EmberJS Controllers](/blog/testing-emberjs-controllers)
-* [Testing EmberJS Templates](/blog/emberjs-testing-templates/)
+* [Testing EmberJS Templates](/blog/emberjs-testing-templates)
