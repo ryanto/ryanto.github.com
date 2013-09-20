@@ -19,6 +19,13 @@
   <script type="text/javascript"
     src="http://builds.emberjs.com/ember-1.0.0-rc.7.js"></script>
 
+  <script type="text/x-handlebars" data-template-name="post">
+    <h1 class="title">{{title}}</h1>
+    <p class="body">
+      {{body}}
+    </p>
+  </script>
+
   <script type="text/x-handlebars" data-template-name="_can_buy_beer">
     {{#if userIsOver21}}
       You can buy our beer.
@@ -34,15 +41,14 @@
 
     App.setupForTesting();
 
-    var qunitFixture = $('#qunit-fixture'),
-        controller,
+    var controller,
         view;
 
-    module("Testing", {
+    module("Testing a Template", {
       setup: function() {
         controller = {};
         view = Ember.View.create({
-          template: Ember.Handlebars.compile("{{partial '_can_buy_beer'}}"),
+          templateName: 'post',
           controller: controller,
           container: App.__container__
         });
@@ -55,18 +61,65 @@
       }
     });
 
-    test("it should show the buy link when the user is over 21", function() {
+    test("it should show the title", function() {
+      controller.title = "Hello World";
+
+      Ember.run(function() {
+        view.appendTo('#qunit-fixture');
+      });
+
+      equal(
+        $('#qunit-fixture .title').text().trim(),
+        "Hello World",
+        "found title"
+      );
+    });
+
+    module("Testing a Partial", {
+      setup: function() {
+        controller = {};
+        view = Ember.View.create({
+          template: Ember.Handlebars.compile("{{partial 'can_buy_beer'}}"),
+          controller: controller,
+          container: App.__container__
+        });
+      },
+      teardown: function() {
+        Ember.run(function() {
+          view.destroy();
+        });
+        controller = null;
+      }
+    });
+
+    test("it should say the user can buy beer when the user is over 21", function() {
       controller.userIsOver21 = true;
 
       Ember.run(function() {
         view.appendTo('#qunit-fixture');
       });
 
+      equal(
+        $('#qunit-fixture').text().trim(),
+        'You can buy our beer.',
+        'displayed message'
+      );
     });
 
     test("it should show a sorry message when the user is under 21", function() {
+      controller.userIsOver21 = false;
 
+      Ember.run(function() {
+        view.appendTo('#qunit-fixture');
+      });
+
+      equal(
+        $('#qunit-fixture').text().trim(),
+        'Sorry you cannot buy beer.',
+        'displayed message'
+      );
     });
   </script>
+
 </body>
 </html>
