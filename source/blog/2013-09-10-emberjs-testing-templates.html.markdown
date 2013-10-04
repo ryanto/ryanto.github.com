@@ -1,6 +1,6 @@
 ---
 title: Testing EmberJS Templates
-published: true
+published: false
 cover: cover.png
 ---
 
