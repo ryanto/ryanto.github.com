@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+
+    <title>EmberJS Mixins</title>
+
+    <link href='http://fonts.googleapis.com/css?family=Cabin+Condensed:400,700'
+      rel='stylesheet' type='text/css'>
+
+    <link rel="icon" type="image/png" href="/images/icon.png" />
+
+    <link href="/stylesheets/all.css" rel="stylesheet" type="text/css" />
+  </head>
+
+  <body class="blog blog_emberjs-mixins blog_emberjs-mixins_index">
+
+      <div class="Blog-post">
+  <h1 class="Blog-post__title">
+    <a href="/blog/emberjs-mixins/"
+      >EmberJS Mixins</a>
+  </h1>
+
+  <p>In EmberJS the Mixin class can create objects whose properties
+and functions can be shared amongst other classes and instances. This
+allows for an easy way to share behavior between objects as well as
+design objects that may need multiple inheritance.</p>
+
+<p></p>
+
+<p>Mixins are great for abstracting pieces of reusable code into smaller
+single responsibility objects. For larger applications this makes code
+easier to reason about and easier to test.</p>
+
+<pre><code class="javascript">App.HelloMixin = Ember.Mixin.create({
+  sayHello: function() {
+    alert("Hello " + this.get('name'));
+  }
+});
+</code></pre>
+
+<p>The mixin can then be added to any class with the <code>extend</code> function.</p>
+
+<pre><code class="javascript">App.Person = Ember.Object.extend(App.HelloMixin);
+App.Product = Ember.Object.extend(App.HelloMixin);
+
+ryan = App.Person.create({ name: 'ryan' });
+book = App.Product.create({ name: 'A Storm of Swords' });
+
+ryan.sayHello(); // "Hello ryan"
+book.sayHello(); // "Hello A Storm of Swords"
+</code></pre>
+
+<h3 id="examples">Examples</h3>
+
+<p>Mixins are applicable to all class of Ember including models,
+controllers, and views. This allows you to take advantage of some
+specific idioms and conventions that exist in Ember.</p>
+
+<p>A mixin can be used to quickly wire up controllers that may depend on
+another controller. For example, a couple of controllers might need
+access to the application's current user.</p>
+
+<pre><code class="javascript">App.CurrentUserMixin = Ember.Mixin.create({
+  needs: 'currentUser',
+  currentUser: Ember.computed.alias('controllers.currentUser')
+});
+
+App.ProfileController = Ember.ObjectController.extend(
+  App.CurrentUserMixin, {
+
+  isCurrentUsersProfile: function() {
+    return this.get('currentUser.model') === this.get('model');
+  }.property('currentUser.model', 'model');
+});
+</code></pre>
+
+<p>The same can be done if views need to share a common piece of code.
+Imagine a view that wants to use jQuery UI's resizable feature.</p>
+
+<pre><code class="javascript">App.ResizableViewMixin = Ember.Mixin.create({
+  didInsertElement: function() {
+    this.$().resizable();
+  }
+});
+
+App.PictureView = Ember.View.extend(App.ResiableViewMixin);
+</code></pre>
+
+<h3 id="mixins-at-runtime">Mixins at Runtime</h3>
+
+<p>Mixins can also be applied to instances of objects at runtime. This
+allows for only certain objects to gain behavior.</p>
+
+<pre><code class="javascript">App.Coffee = Ember.Object.extend();
+
+starbucks = App.Coffee.create({ name: 'Starbucks' });
+dunkindonuts = App.Coffee.create({ name: 'Dunkin Donuts' });
+
+App.HelloMixin.apply(starbucks);
+
+starbucks.sayHello(); // "Hello Starbucks"
+dunkindonuts.sayHello(); // No method error
+</code></pre>
+
+<h3 id="mixin-detection">Mixin Detection</h3>
+
+<p>An object can quickly be checked for the presence of a mixin using the
+<code>detect</code> function. Building off the example above.</p>
+
+<pre><code class="javascript">App.HelloMixin.detect(starbucks) // =&gt; true
+App.HelloMixin.detect(dunkindonuts) // =&gt; false
+</code></pre>
+
+<h3 id="included-mixins">Included Mixins</h3>
+
+<p>Ember comes with many mixins available to use in any class or instance.
+There are mixins to deal with a very wide range of abstractions such as
+immutability, sorting, enumeration, and events. A full list of mixins
+can be found in
+<a href="https://github.com/emberjs/ember.js/tree/master/packages/ember-runtime/lib/mixins">ember-runtime</a>.</p>
+
+</div>
+
+
+    <script src="/javascripts/all.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      hljs.initHighlightingOnLoad();
+
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-42326897-1', 'codingvalue.com');
+      ga('send', 'pageview');
+    </script>
+  </body>
+</html>

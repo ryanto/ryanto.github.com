@@ -1,0 +1,1241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Coding Value Blog</title>
+  <subtitle>A blog about EmberJS and Ruby on Rails</subtitle>
+  <id>http://codingvalue.com/blog</id>
+  <link href="http://codingvalue.com/blog"/>
+  <link href="http://codingvalue.com/blog/feed.xml" rel="self"/>
+  <updated>2013-07-28T00:00:00-04:00</updated>
+  <author>
+    <name>Ryan Toronto</name>
+  </author>
+  <entry>
+    <title>EmberJS Enumerable Mixin</title>
+    <link rel="alternate" href="http://codingvalue.com/blog/emberjs-enumerable-mixin/"/>
+    <id>http://codingvalue.com/blog/emberjs-enumerable-mixin/</id>
+    <published>2013-07-28T00:00:00-04:00</published>
+    <updated>2014-04-23T21:19:38-04:00</updated>
+    <author>
+      <name>Ryan Toronto</name>
+    </author>
+    <summary type="html">&lt;p&gt;An EmberJS Mixin is an object that allows for code to be shared across
+unrelated classes that behave in a similar fashion. This is a powerful
+concept because it allows for easy code reuse and forces well thought
+interface design.&lt;/p&gt;
+
+&lt;p&gt;</summary>
+    <content type="html">&lt;p&gt;An EmberJS Mixin is an object that allows for code to be shared across
+unrelated classes that behave in a similar fashion. This is a powerful
+concept because it allows for easy code reuse and forces well thought
+interface design.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;p&gt;An example of this can be shown with the following data structures:
+arrays, linked lists, and hash maps. Each of these classes will have
+different implementations, but there is common functionality that is
+expected in all three. For example iterating over every element in the
+collection. If iteration can occur than it is reasonable to expect
+functions like map, filter, and reduce to exist. Since these functions
+are higher level concepts they should be abstracted into a library
+that any collection like class can use.&lt;/p&gt;
+
+&lt;p&gt;This is exactly what Ember's Enumerable Mixin is. An object that
+implements many of the higher level enumeration functions, like map,
+filter, and reduce. In fact, any class can use the enumerable mixin
+as long as it follows two simple rules:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The class must have a &lt;code&gt;lengh&lt;/code&gt; property.&lt;/li&gt;
+  &lt;li&gt;The class must implement &lt;code&gt;nextObject&lt;/code&gt;, a function that returns the
+next object in the collection.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id="linked-list"&gt;Linked List&lt;/h3&gt;
+
+&lt;p&gt;The following will be a guide to creating a linked list class that mixes
+in enumerable. A linked list is a data structure that represents a
+collection of nodes that point to each other.&lt;/p&gt;
+
+&lt;div class="center"&gt;
+  &lt;img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Singly-linked-list.svg/816px-Singly-linked-list.svg.png" width="400" /&gt;&lt;br /&gt;
+  &lt;small&gt;From &lt;a href="https://en.wikipedia.org/wiki/Linked_list"&gt;Wikipedia&lt;/a&gt;&lt;/small&gt;
+  &lt;br /&gt;&lt;br /&gt;
+&lt;/div&gt;
+
+&lt;pre&gt;&lt;code&gt;Node = Ember.Object.extend({
+  value: null,
+  next: null
+});
+
+var head = Node.create({
+  value: 12,
+  next: Node.create({
+    value: 99,
+    next: Node.create({
+      value: 37
+    })
+  })
+});
+
+head.get('value') // =&amp;gt; 12
+head.get('next.value') // =&amp;gt; 99
+head.get('next.next.value') // =&amp;gt; 37
+head.get('next.next.next') // =&amp;gt; undefined
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id="length-property"&gt;Length Property&lt;/h4&gt;
+
+&lt;p&gt;In order to calculate the length of a linked list a function just needs
+to keep track of how many times it can go to the next object before
+hitting undefined.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Node = Ember.Object.extend({
+  // ...
+
+  length: function() {
+    var timesWeFoundNext = 1,
+        next = this.get('next');
+
+    while (next) {
+      ++timesWeFoundNext;
+      next = next.get('next');
+    }
+
+    return timesWeFoundNext;
+  }.property('next.length')
+});
+
+var head = Node.create({ value: 'a' });
+head.get('length') // =&amp;gt; 1
+
+head.set('next', Node.create({ value: 'b' }));
+head.get('length') // =&amp;gt; 2
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id="next-object"&gt;Next Object&lt;/h4&gt;
+
+&lt;p&gt;Ember's Enumerable mixin requires next object to have the following
+signature: &lt;code&gt;nextObject(index, previousObject, context)&lt;/code&gt; where:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code&gt;index&lt;/code&gt; is the Nth item we are looking for. An index of 0 means the
+first item.&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;previousItem&lt;/code&gt; is the value that the previous call to &lt;code&gt;nextObject&lt;/code&gt;
+returned .&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;context&lt;/code&gt; is a scratch pad that can be used to save temporary data.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;For a linked list &lt;code&gt;nextObject&lt;/code&gt; only needs to take advantage of the
+&lt;code&gt;index&lt;/code&gt; argument.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Node = Ember.Object.extend({
+  // ...
+
+  nextObject: function(index) {
+    var atNodeNumber = 0,
+        next = this;
+
+    while (atNode &amp;lt; index) {
+      ++atNode;
+      next = next.get('next');
+    }
+
+    return next;
+  } 
+});
+
+var head = Node.create({ value: 'hello' });
+head.nextObject(0).get('value') // =&amp;gt; 'hello'
+
+head.set('next', Node.create({ value: 'world' }));
+head.nextObject(1).get('value') // =&amp;gt; 'world'
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id="mixing-in-enumerable"&gt;Mixing in Enumerable&lt;/h4&gt;
+
+&lt;p&gt;To make a class Enumerable the mixin just needs to be applied to the
+extend method.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Node = Ember.Object.extend(Ember.Enumerable, {
+  length: // ...
+  nextOjbect: // ..
+  next: // ...
+  value: // ...
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now any of the functions defined in
+&lt;a href="https://github.com/emberjs/ember.js/blob/master/packages/ember-runtime/lib/mixins/enumerable.js"&gt;Ember.Enumerable&lt;/a&gt;
+will work for the Node class.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var head = Node.create({
+  value: 1,
+  next: Node.create({
+    value: 2,
+    next: Node.create({
+      value: 3
+    })
+  })
+});
+
+var nodeTimesTwo = function(node) { 
+  return node.get('value') * 2;
+};
+
+head.map(nodeTimesTwo); // =&amp;gt; [2,4,6]
+
+// and
+
+var nodeSum = function(total, node) { 
+  return total + node.get('value');
+};
+
+head.reduce(nodeSum, 0) // =&amp;gt; 6 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id="overriding"&gt;Overriding&lt;/h4&gt;
+
+&lt;p&gt;Map and reduce functions work great, but when filter is applied to the
+list something strange happens.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;head.filter(function(node) {
+  return node.get('value') &amp;lt; 3;
+}); 
+
+// =&amp;gt; [node({ value: 1 }), node({ value: 2})]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Although the correct nodes are returned, the data structure is
+incorrect. &lt;code&gt;Node#filter&lt;/code&gt; should return nodes expressed as a linked
+list, not an array.&lt;/p&gt;
+
+&lt;p&gt;To correct this &lt;code&gt;Node#filter&lt;/code&gt; will need to implement its own function
+that returns a list.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Node = Ember.Object.extend(Ember.Enumerable, {
+  // ...
+  
+  filter: function(fn, context) {
+    var arrayOfNodes = this._super.apply(this, arguments),
+        arrayOfValues = arrayOfNodes.mapProperty('value');
+    return Node.createFromArray(arrayOfValues);
+  }
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is a nice use of &lt;code&gt;super&lt;/code&gt;. It's silly to reinvent &lt;code&gt;filter&lt;/code&gt;
+since it already exists, but our filter function should change the
+return value from an array to a list.&lt;/p&gt;
+
+&lt;p&gt;The last required function is &lt;code&gt;Node.createFromArray&lt;/code&gt;, which creates a
+list from an array of values.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Node.reopenClass({
+  createFromArray: function(array) {
+    var createNode = function(item) {
+          return Node.create({ value: item })
+        },
+        nodes = array.map(createNode),
+        head = nodes[0],
+        linkNodes = function(first, second) {
+          first.set('next', second);
+          return second;
+        };
+
+    nodes.reduce(linkNodes);
+    return head;
+  }
+});
+
+var head = Node.createFromArray([1,2,3,4]);
+
+head.get('value'); // =&amp;gt; 1
+head.get('next.next.value'); // =&amp;gt; 3
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;With these two functions lists can be filtered into brand new lists.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var head = Node.createFromArray([1,2,3,4]);
+
+var filtered = head.filter(function(node) {
+  return node.get('value') % 2 === 0;
+});
+
+filtered.get('length') // =&amp;gt; 2
+filtered.get('next.value') // =&amp;gt; 4
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+  </entry>
+  <entry>
+    <title>EmberJS Mixins</title>
+    <link rel="alternate" href="http://codingvalue.com/blog/emberjs-mixins/"/>
+    <id>http://codingvalue.com/blog/emberjs-mixins/</id>
+    <published>2013-07-08T00:00:00-04:00</published>
+    <updated>2014-04-23T21:19:38-04:00</updated>
+    <author>
+      <name>Ryan Toronto</name>
+    </author>
+    <summary type="html">&lt;p&gt;In EmberJS the Mixin class can create objects whose properties
+and functions can be shared amongst other classes and instances. This
+allows for an easy way to share behavior between objects as well as
+design objects that may need multiple inheritance.&lt;/p&gt;
+
+&lt;p&gt;</summary>
+    <content type="html">&lt;p&gt;In EmberJS the Mixin class can create objects whose properties
+and functions can be shared amongst other classes and instances. This
+allows for an easy way to share behavior between objects as well as
+design objects that may need multiple inheritance.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;p&gt;Mixins are great for abstracting pieces of reusable code into smaller
+single responsibility objects. For larger applications this makes code
+easier to reason about and easier to test.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="javascript"&gt;App.HelloMixin = Ember.Mixin.create({
+  sayHello: function() {
+    alert("Hello " + this.get('name'));
+  }
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The mixin can then be added to any class with the &lt;code&gt;extend&lt;/code&gt; function.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="javascript"&gt;App.Person = Ember.Object.extend(App.HelloMixin);
+App.Product = Ember.Object.extend(App.HelloMixin);
+
+ryan = App.Person.create({ name: 'ryan' });
+book = App.Product.create({ name: 'A Storm of Swords' });
+
+ryan.sayHello(); // "Hello ryan"
+book.sayHello(); // "Hello A Storm of Swords"
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id="examples"&gt;Examples&lt;/h3&gt;
+
+&lt;p&gt;Mixins are applicable to all class of Ember including models,
+controllers, and views. This allows you to take advantage of some
+specific idioms and conventions that exist in Ember.&lt;/p&gt;
+
+&lt;p&gt;A mixin can be used to quickly wire up controllers that may depend on
+another controller. For example, a couple of controllers might need
+access to the application's current user.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="javascript"&gt;App.CurrentUserMixin = Ember.Mixin.create({
+  needs: 'currentUser',
+  currentUser: Ember.computed.alias('controllers.currentUser')
+});
+
+App.ProfileController = Ember.ObjectController.extend(
+  App.CurrentUserMixin, {
+
+  isCurrentUsersProfile: function() {
+    return this.get('currentUser.model') === this.get('model');
+  }.property('currentUser.model', 'model');
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The same can be done if views need to share a common piece of code.
+Imagine a view that wants to use jQuery UI's resizable feature.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="javascript"&gt;App.ResizableViewMixin = Ember.Mixin.create({
+  didInsertElement: function() {
+    this.$().resizable();
+  }
+});
+
+App.PictureView = Ember.View.extend(App.ResiableViewMixin);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id="mixins-at-runtime"&gt;Mixins at Runtime&lt;/h3&gt;
+
+&lt;p&gt;Mixins can also be applied to instances of objects at runtime. This
+allows for only certain objects to gain behavior.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="javascript"&gt;App.Coffee = Ember.Object.extend();
+
+starbucks = App.Coffee.create({ name: 'Starbucks' });
+dunkindonuts = App.Coffee.create({ name: 'Dunkin Donuts' });
+
+App.HelloMixin.apply(starbucks);
+
+starbucks.sayHello(); // "Hello Starbucks"
+dunkindonuts.sayHello(); // No method error
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id="mixin-detection"&gt;Mixin Detection&lt;/h3&gt;
+
+&lt;p&gt;An object can quickly be checked for the presence of a mixin using the
+&lt;code&gt;detect&lt;/code&gt; function. Building off the example above.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="javascript"&gt;App.HelloMixin.detect(starbucks) // =&amp;gt; true
+App.HelloMixin.detect(dunkindonuts) // =&amp;gt; false
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id="included-mixins"&gt;Included Mixins&lt;/h3&gt;
+
+&lt;p&gt;Ember comes with many mixins available to use in any class or instance.
+There are mixins to deal with a very wide range of abstractions such as
+immutability, sorting, enumeration, and events. A full list of mixins
+can be found in
+&lt;a href="https://github.com/emberjs/ember.js/tree/master/packages/ember-runtime/lib/mixins"&gt;ember-runtime&lt;/a&gt;.&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
+    <title>Prototyping EmberJS Applications</title>
+    <link rel="alternate" href="http://codingvalue.com/blog/prototyping-ember-applications/"/>
+    <id>http://codingvalue.com/blog/prototyping-ember-applications/</id>
+    <published>2013-05-25T00:00:00-04:00</published>
+    <updated>2014-04-23T21:19:38-04:00</updated>
+    <author>
+      <name>Ryan Toronto</name>
+    </author>
+    <summary type="html">&lt;p&gt;Prototyping applications with EmberJS and Ember-Data can be extremely
+easy. In fact, it is possible have a nicely working prototype ready to
+show off in under an hour. Most people think of JavaScript applications
+as sort of the last stage, the final piece that is built on top of a
+finished back end API service. While a back end will eventually be
+required it may actually be easier to prototype an application starting
+with the JavaScript side first.&lt;/p&gt;
+
+&lt;p&gt;</summary>
+    <content type="html">&lt;p&gt;Prototyping applications with EmberJS and Ember-Data can be extremely
+easy. In fact, it is possible have a nicely working prototype ready to
+show off in under an hour. Most people think of JavaScript applications
+as sort of the last stage, the final piece that is built on top of a
+finished back end API service. While a back end will eventually be
+required it may actually be easier to prototype an application starting
+with the JavaScript side first.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;p&gt;The examples from this post are all taken from a very simple project
+management application written in Ember. The source code can be found on
+&lt;a href="https://github.com/ryanto/prototyping-app-talk"&gt;this github repo&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id="start-with-urls"&gt;Start with URLs&lt;/h2&gt;
+
+&lt;p&gt;Before creating a new Ember application it is best to write down a list
+of URLs that one would expect to see. For example, a piece of project
+management software would likely have the following URLs.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="text"&gt;/projects
+/projects/new
+/projects/1
+/projects/1/tasks/15
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;From the list of URLs above it is very clear what each page will
+display. Creating this list is the hardest part of prototyping an Ember
+application because afterwards everything else becomes a matter of
+following Ember's conventions. Once there is a list of URLs, all of the
+routes, controllers, models, and templates will naturally fall into
+place.&lt;/p&gt;
+
+&lt;h2 id="router"&gt;Router&lt;/h2&gt;
+
+&lt;p&gt;Turning the above list of URLs into an EmberJS Router is very straight
+forward. The nouns will be represented as &lt;strong&gt;resources&lt;/strong&gt; and the verbs
+will be created as &lt;strong&gt;routes&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;In order to satisfy &lt;code&gt;/projects&lt;/code&gt; a simple resource will be used&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="javascript"&gt;App.Router.map(function() {
+  this.resource('projects');
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;New projects can will be created by visiting &lt;code&gt;/projects/new&lt;/code&gt;, which
+will be controlled by the following nested route.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="javascript"&gt;this.resource('projects', function() {
+  this.route('new');
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The URL &lt;code&gt;/projects/1&lt;/code&gt; will be a dynamic route that is responsible for
+displaying the given project. The router definition is as fallows:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="javascript"&gt;this.resource('projects', function() {
+  this.resource('project', { path: '/:project_id' });
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And because projects have tasks there will be nested tasks resources
+inside the project route. This will create the &lt;code&gt;/projects/1/tasks/15&lt;/code&gt;
+URL.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="javascript"&gt;this.resource('project', { path: '/:project_id' }, function() {
+  this.resource('tasks', function() {
+    this.resource('task', { path: '/:task_id' });
+  });
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now every one of the desired URLs has a route that maps to it. The
+final router looks like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="javascript"&gt;App.Router.map(function() {
+  this.resource('projects', function() {
+    this.route('new');
+    this.resource('project', { path: '/:project_id' }, function() {
+      this.resource('tasks', function() {
+        this.resource('task', { path: '/:task_id' }, function() {
+        });
+      });
+    });
+  });
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id="conventions-and-objects"&gt;Conventions and Objects&lt;/h2&gt;
+
+&lt;p&gt;Having the router mapped out means that our Models, Routes, Controllers,
+Views and Templates just fall into place. Here is a table showing all
+the possible objects that could be used based on the above router.&lt;/p&gt;
+
+&lt;table class="small"&gt;
+&lt;tr&gt;
+&lt;th&gt;URL&lt;/th&gt;
+&lt;th&gt;Model&lt;/th&gt;
+&lt;th&gt;Route&lt;/th&gt;
+&lt;th&gt;Controller&lt;/th&gt;
+&lt;th&gt;View&lt;/th&gt;
+&lt;th&gt;Template&lt;/th&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;th&gt;/projects&lt;/th&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;ProjectsRoute&lt;/td&gt;
+&lt;td&gt;ProjectsController&lt;/td&gt;
+&lt;td&gt;ProjectsView&lt;/td&gt;
+&lt;td&gt;projects.handlebars&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;ProjectsIndexRoute&lt;/td&gt;
+&lt;td&gt;ProjectsIndexController&lt;/td&gt;
+&lt;td&gt;ProjectsIndexView&lt;/td&gt;
+&lt;td&gt;projects/index.handlebars&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;th&gt;/projects/new&lt;/th&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;ProjectsNewRoute&lt;/td&gt;
+&lt;td&gt;ProjectsNewController&lt;/td&gt;
+&lt;td&gt;ProjectsNewView&lt;/td&gt;
+&lt;td&gt;projects/new.handlebars&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;th&gt;/projects/1&lt;/th&gt;
+&lt;td&gt;Project&lt;/td&gt;
+&lt;td&gt;ProjectRoute&lt;/td&gt;
+&lt;td&gt;ProjectController&lt;/td&gt;
+&lt;td&gt;ProjectView&lt;/td&gt;
+&lt;td&gt;project.handlebars&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;ProjectIndexRoute&lt;/td&gt;
+&lt;td&gt;ProjectIndexController&lt;/td&gt;
+&lt;td&gt;ProjectIndexView&lt;/td&gt;
+&lt;td&gt;project/index.handlebars&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;th&gt;/project/1/tasks&lt;/th&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;TasksRoute&lt;/td&gt;
+&lt;td&gt;TasksController&lt;/td&gt;
+&lt;td&gt;TasksView&lt;/td&gt;
+&lt;td&gt;tasks.handlebars&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;TasksIndexRoute&lt;/td&gt;
+&lt;td&gt;TasksIndexController&lt;/td&gt;
+&lt;td&gt;TasksIndexView&lt;/td&gt;
+&lt;td&gt;tasks/index.handlebars&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;th&gt;/project/1/tasks/15&lt;/th&gt;
+&lt;td&gt;Task&lt;/td&gt;
+&lt;td&gt;TaskRoute&lt;/td&gt;
+&lt;td&gt;TaskController&lt;/td&gt;
+&lt;td&gt;TaskView&lt;/td&gt;
+&lt;td&gt;task.handlebars&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;TaskIndexRoute&lt;/td&gt;
+&lt;td&gt;TaskIndexController&lt;/td&gt;
+&lt;td&gt;TaskIndexView&lt;/td&gt;
+&lt;td&gt;task/index.handlebars&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;/table&gt;
+
+&lt;p&gt;Note that not all of these objects are actually required for the
+application to work. They will only have to be created if the behavior
+is different from the Ember defaults, which are usually enough to get
+your application up and running.&lt;/p&gt;
+
+&lt;h2 id="setting-up-the-projects-page"&gt;Setting up the Projects Page&lt;/h2&gt;
+
+&lt;p&gt;In our application &lt;code&gt;/projects&lt;/code&gt; will display all of the projects.
+Before any projects can be listed there needs to be a project model.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="javascript"&gt;App.Project = DS.Model.extend({
+  name: DS.attr('string'),
+  tasks: DS.hasMany('App.Task')
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And because the projects page displays a collection a projects an 
+&lt;code&gt;ArrayController&lt;/code&gt; will be used.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="javascript"&gt;App.ProjectsController = Ember.ArrayController.extend();
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The template will simply list all projects with a link to each project.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="handlebars"&gt;&amp;lt;h1&amp;gt;All Projects&amp;lt;/h1&amp;gt;
+
+&amp;lt;p&amp;gt;You have {{length}} projects&amp;lt;/p&amp;gt;
+
+{{#each project in controller}}
+ {{#linkTo project project}}  
+   {{project.name}}
+  {{/linkTo}}
+{{/each}}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id="using-the-application"&gt;Using the Application&lt;/h2&gt;
+
+&lt;p&gt;Going to &lt;code&gt;/projects&lt;/code&gt; displays the correct page, a list of projects.
+However, since there are no projects nothing is displayed. This is the
+point where most prototyping of Ember applications either slows down or
+heads down an incorrect path.&lt;/p&gt;
+
+&lt;p&gt;Projects need to exist in the prototype and there are a number of ways
+to make that happen.&lt;/p&gt;
+
+&lt;h3&gt;
+  &lt;span class="radius label alert"&gt;Don't&lt;/span&gt; 
+  Create a Back End API / Service 
+&lt;/h3&gt;
+
+&lt;p&gt;Although this will eventually be needed, it is probably too early to
+start building out the back end API. Back ends are complicated, 
+requiring a lot of code and testing taking days or weeks to complete. 
+The idea is to get an Ember application prototyped as quickly as 
+possible so little time should be spent on non Ember application design.&lt;/p&gt;
+
+&lt;h3&gt;
+  &lt;span class="radius label alert"&gt;Don't&lt;/span&gt; 
+  Use /projects/new
+&lt;/h3&gt;
+
+&lt;p&gt;Using &lt;code&gt;/projects/new&lt;/code&gt; is an easy way to add projects to the
+application. However, those projects would not be persisted anywhere and
+lost as soon as that page refreshed. When prototyping the application
+the developer would have to manually add a new project after each
+reload.&lt;/p&gt;
+
+&lt;h3&gt;
+  &lt;span class="radius label alert"&gt;Don't&lt;/span&gt; 
+  Force Models into the ProjectsController
+&lt;/h3&gt;
+
+&lt;p&gt;When the user enters the &lt;code&gt;ProjectsIndexRoute&lt;/code&gt; the route can create and push a 
+bunch of dummy projects onto the &lt;code&gt;ProjectsIndexController&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="javascript"&gt;App.ProjectsIndexRoute = Ember.Route.extend({
+  setupController: function(controller) {
+    controller.pushObject([
+      App.Project.createRecord({ name: "Test Project" }),
+      App.Project.createRecord({ name: "Another Project" })
+    ]);
+  }
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is problematic because it mixes code with test data. As the
+application grows larger more and more test data will start appearing
+throughout the code base. When the application is ready for production
+there are now many files to edit and change. There is no easy way to
+switch between test data and back end service.&lt;/p&gt;
+
+&lt;h3&gt;
+  &lt;span class="radius label success"&gt;Do&lt;/span&gt; 
+  Use Ember Data's Fixture Adapter
+&lt;/h3&gt;
+
+&lt;p&gt;This is the answer to all of the above problems. The fixture adapter
+gives the application access to stored data, so data survives a page
+refresh. It simulates asynchronous loading of data, which is most likely
+how the application will work in production. Most important, it keeps
+test data separate from code.&lt;/p&gt;
+
+&lt;p&gt;The fixture adapter is built into Ember Data and can be used with just
+the following code:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="javascript"&gt;App.Store = DS.Store.extend({
+  rev: 12,
+  adapter: DS.FixtureAdapter
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To seed the application with data a &lt;code&gt;FIXTURES&lt;/code&gt; array should be placed
+on each of the application's models.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="javascript"&gt;App.Project.FIXTURES = [{
+  id: 1,
+  name: "Test Project 1",
+  tasks: [1, 2]
+},{
+  id: 2,
+  name: "Another Project",
+  tasks: [3, 4]
+}];
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now inside the application Ember-Data's methods will work as expected.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="javascript"&gt;project = App.Project.find(1);
+project.get('name'); 
+// =&amp;gt; "Test Project 1"
+
+projects = App.Project.find();
+projects.get('length');
+// =&amp;gt; 2
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id="back-to-projects"&gt;Back to Projects&lt;/h2&gt;
+
+&lt;p&gt;Inside the &lt;code&gt;ProjectsRoute&lt;/code&gt; records can be loaded using Ember-Data's
+&lt;code&gt;find()&lt;/code&gt; function. This allows the route to take the following form.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="javascript"&gt;App.ProjectsIndexRoute = Ember.Route.extend({
+  model: function() {
+    App.Project.find();
+  
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Once the page is refreshed the fixtures turn into models and
+are displayed.&lt;/p&gt;
+
+&lt;h2 id="how-the-fixture-adapter-works"&gt;How the Fixture Adapter works&lt;/h2&gt;
+
+&lt;p&gt;At this point it is worth explaining how the application actually uses
+fixtures. It is very important to know that fixtures do not represent
+already loaded data, what fixtures represent is data that your adapter
+has access to.&lt;/p&gt;
+
+&lt;h3 id="loading-records"&gt;Loading Records&lt;/h3&gt;
+
+&lt;p&gt;Specific fixtures can be loaded by id. When &lt;code&gt;App.Project.find(1)&lt;/code&gt; is
+called the adapter knows to return the fixture with id 1.&lt;/p&gt;
+
+&lt;p&gt;All fixtures can be loaded by calling find with no parameters.
+&lt;code&gt;App.Projects.find()&lt;/code&gt; will return all fixtures as models.&lt;/p&gt;
+
+&lt;h3 id="custom-queries"&gt;Custom Queries&lt;/h3&gt;
+
+&lt;p&gt;When querying for a subset of records, such as &lt;code&gt;App.Project.find({
+search: 'test' })&lt;/code&gt;, the fixture adapter has no idea which fixtures to
+load. It is up to the developer to implement this logic and that is done
+in the &lt;code&gt;queryFixtures&lt;/code&gt; function of the adapter.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="javascript"&gt;App.Store = DS.Store.extend({
+  adapter: DS.FixtureAdapter.extend({
+    queryFixtures: function(fixtures, query, type) {
+      // ...
+    }
+  })
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The signature of &lt;code&gt;queryFixtures&lt;/code&gt; is &lt;code&gt;queryFixtures(fixtures, query,
+type)&lt;/code&gt;.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code&gt;fixtures&lt;/code&gt;: List of available fixtures.&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;query&lt;/code&gt;: The hash that was passed into &lt;code&gt;find()&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;type&lt;/code&gt;: The model being queried.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The following will have &lt;code&gt;App.Project.find({ search: 'test' })&lt;/code&gt; return
+all of the projects whose name matches 'test'. This can be used to
+simulate responses from a search service.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="javascript"&gt;queryFixtures(fixtures, query, type) {
+  if (type == App.Project &amp;amp;&amp;amp; query.search) {
+    var searchRegex = new RegExp(query.search, "i");
+    return fixtures.filter(function(project) {
+      return searchRegex.test(project.name);
+    });
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id="fixture-latency"&gt;Fixture Latency&lt;/h3&gt;
+
+&lt;p&gt;By default the fixture adapter simulates asynchrony by not returning the
+models right away. Instead an object is returned that will later contain
+the requested model(s).&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="javascript"&gt;project = App.Project.find(1)
+project.get('name') // =&amp;gt; undefined
+// wait 50ms
+project.get('name') // =&amp;gt; "Test Project"
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class="javascript"&gt;projects = App.Project.find()
+projects.get('length') // =&amp;gt; 0
+// wait 50ms
+projects.get('length') // =&amp;gt; 2
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The latency time can be changed or completely disabled inside the
+adapter.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="javascript"&gt;DS.FixtureAdapter.extend({
+  simulateRemoteResponse: true,
+  latency: 10
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The object returned from any of the above &lt;code&gt;find&lt;/code&gt; calls is thenable,
+which means promises can be chained onto the queries. This makes event
+handling a bit easier to follow.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="javascript"&gt;searchResults = App.Project.find({ search: 'test' })
+  .then(function(results) {
+    console.log(results.get('length') + ' have loaded');
+  });
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id="back-to-projects-1"&gt;Back to Projects&lt;/h2&gt;
+
+&lt;p&gt;The &lt;code&gt;/projects/new&lt;/code&gt; page is probably the next natural page to follow.
+In order to have a page that is responsible for creating new projects a
+tempalte, controller, and route will be needed.&lt;/p&gt;
+
+&lt;p&gt;The template is going to be a simple form that accepts a name and has a
+save button.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="handlebars"&gt;&amp;lt;h1&amp;gt;New Project&amp;lt;/h1&amp;gt;
+
+&amp;lt;form {{action save on="submit"}}&amp;gt;
+  &amp;lt;div&amp;gt;
+    {{input value=name
+      placeholder="Name"}}
+  &amp;lt;/div&amp;gt;
+
+  &amp;lt;input type="submit" value="Create"&amp;gt;
+&amp;lt;/form&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Because the template calls &lt;code&gt;save&lt;/code&gt; on submit the ProjectsNewController
+will need to have a &lt;code&gt;save&lt;/code&gt; function. Once the save completes the
+router will transition to a page that shows the project.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="javascript"&gt;App.ProjectsNewController = Ember.ObjectController.extend({
+  content: null,
+
+  save: function() {
+    var project = this.get('content'),
+        controller = this;
+
+    project.save().then(function() {
+      controller.transitionToRoute('project', project);
+    });
+  }
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And finally a route is needed to setup the controller with a new
+project.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="javascript"&gt;App.ProjectsNewRoute = Ember.Route.extend({
+  model: function() {
+    return App.Project.createRecord();
+  }
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id="back-end-api-design"&gt;Back End API Design&lt;/h2&gt;
+
+&lt;p&gt;If the entire application is prototyped using fixtures then when it
+comes to API design very little work is actually needed. The fixtures
+will translate nicely to the actual JSON responses the back end service
+will be sending.&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;div class="left" style="width: 49%;"&gt;
+    &lt;h3&gt;Fixture&lt;/h3&gt;
+&lt;pre&gt;&lt;code class="javascript"&gt;App.Project.Fixtures = [{
+  id: 1,
+  name: "Test Project",
+  tasks: [1, 2]
+}];
+
+App.Task.FIXTURES = [{
+  id: 1,
+  name: "Do this",
+  project: 1
+},{
+  id: 2,
+  name: "Do this too",
+  project: 1
+}];
+
+
+&lt;/code&gt;&lt;/pre&gt;
+  &lt;/div&gt;
+  &lt;div class="right" style="width: 49%;"&gt;
+    &lt;h3&gt;JSON Response&lt;/h3&gt;
+&lt;pre&gt;&lt;code class="javascript"&gt;{
+  project: {
+    id: 1,
+    name: "Test Project"
+    task_ids: [1, 2]
+  },
+
+  tasks: [{
+    id: 1,
+    name: "Do this",
+    project_id: 1
+  }, {
+    id: 2,
+    name: "Do this too",
+    project_id: 1
+  }]
+}
+&lt;/code&gt;&lt;/pre&gt;
+  &lt;/div&gt;
+  &lt;br style="clear: both;" /&gt;
+&lt;/div&gt;
+
+&lt;p&gt;At this point it is probably best the least amount of effort is put into
+designing the API responses. A response that is equivalent to the
+fixtures is all that is needed and projects like &lt;a href="https://github.com/rails-api/active_model_serializers"&gt;Active Model
+Serializers&lt;/a&gt; aim
+to do just that with as little code as possible.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="http://jsonapi.org"&gt;JSONAPI.org&lt;/a&gt; is also worth taking a look at, it
+contains a few proposals for how servers providing a APIs can
+communicate JSON in a well defined way. Ember Data's &lt;code&gt;RESTAdapter&lt;/code&gt;
+plans to follow this specification.&lt;/p&gt;
+
+&lt;h2 id="switching-to-production"&gt;Switching to Production&lt;/h2&gt;
+
+&lt;p&gt;When the back end service is built very little code change is needed in
+the Ember application. In fact, since the back end is communicating it's
+data similar to the fixtures only one line needs to change.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="javascript"&gt;App.Store = DS.Store.extend({
+  adapter: DS.FixtureAdapter
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Turns into&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="javascript"&gt;App.Store = DS.Store.extend({
+  adapter: DS.RESTAdapter
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And this is the beauty of the fixture adapter. No code has to change
+when thinking of the application in the context of prototyping, testing,
+development, or production use.&lt;/p&gt;
+
+&lt;h2 id="real-world-experience"&gt;Real World Experience&lt;/h2&gt;
+
+&lt;p&gt;About two months ago I built an Ember application for a startup that
+relied very heavily on a  back end service. Of course, when we started
+building the Ember application there was no back end for us to use, it
+had not been built yet.&lt;/p&gt;
+
+&lt;p&gt;Two things started to happen: First, the developers designing the
+back end service would constantly want to know how we were expecting the
+responses to look. Everything from what keys would be included with each
+object to what the entire JSON payload should look like. Second, they
+wanted to experiment and change responses, especially normalization, as
+time went on.&lt;/p&gt;
+
+&lt;p&gt;If the back end developers constantly had to wait for the front end team
+to tell them what to include, that would certainly slow down development
+of the back end as these questions could go for hours without having a
+proper answer. And if the front end developers had to develop against an
+API that was constantly changing that would require rewriting code on a
+daily basis.&lt;/p&gt;
+
+&lt;p&gt;What we used here was the fixture adapter. The back end developers could
+check the fixtures in the repository and know exactly how the front end
+team wanted the JSON and relationships. The back end developers could break
+the API whenever they wanted and once they were happy with how something
+worked they would let the front end developers know to update their
+fixtures.&lt;/p&gt;
+
+&lt;p&gt;This worked out great for both sides, and when it came time to push to
+production all we had to do was switch to the &lt;code&gt;DS.RESTAdapter&lt;/code&gt; in the
+Ember application and everything magically worked.&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
+    <title>Ruby Symbols Instead of Blocks</title>
+    <link rel="alternate" href="http://codingvalue.com/blog/ruby-symbols-instead-of-blocks/"/>
+    <id>http://codingvalue.com/blog/ruby-symbols-instead-of-blocks/</id>
+    <published>2011-08-06T00:00:00-04:00</published>
+    <updated>2014-04-23T21:19:38-04:00</updated>
+    <author>
+      <name>Ryan Toronto</name>
+    </author>
+    <summary type="html">&lt;p&gt;Every wonder why this works? It's straight forward and easy to read, but how
+does it work internally in Ruby?&lt;/p&gt;
+
+&lt;p&gt;</summary>
+    <content type="html">&lt;p&gt;Every wonder why this works? It's straight forward and easy to read, but how
+does it work internally in Ruby?&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h2 id="meet-"&gt;Meet &amp;amp;&lt;/h2&gt;
+
+&lt;p&gt;The &lt;code&gt;&amp;amp;&lt;/code&gt; operator in Ruby lets us go from Proc to block and vise-versa, but only
+in certain places.&lt;/p&gt;
+
+&lt;p&gt;In fact, there are two two places where we can use &lt;code&gt;&amp;amp;&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;In a method definition &lt;code&gt;&amp;amp;blk&lt;/code&gt; will turn the block argument into a proc,
+allowing it to be called.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="ruby"&gt;def block_to_proc(&amp;amp;blk)
+  blk.call
+end
+block_to_proc { "hello" }
+# =&amp;gt; "hello"
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And in a method call it coverts the argument into a block.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="ruby"&gt;def proc_to_block
+  yield
+end
+proc_to_block(&amp;amp;proc { "hello" })
+# =&amp;gt; "hello"
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id="to-proc"&gt;To Proc&lt;/h2&gt;
+
+&lt;p&gt;Ruby has a lot of &lt;code&gt;to_X&lt;/code&gt; methods. They are designed to express their receiver
+as another type. For example &lt;code&gt;String#to_i&lt;/code&gt; converts strings into integers.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="ruby"&gt;"1".to_i + 2
+# =&amp;gt; 3
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Well, &lt;code&gt;to_proc&lt;/code&gt; exists too. Expressing non proc objects as procs? When and
+why would we ever do that? An example is our &lt;code&gt;prices.reduce(&amp;amp;:+)&lt;/code&gt; piece. A
+quick, simple, and shorthand way to express &lt;code&gt;+&lt;/code&gt; without having to write out
+&lt;code&gt;proc { |number| self + number }&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Anytime we are trying to express an object as a proc Ruby will check to see if
+that object responds to &lt;code&gt;to_proc&lt;/code&gt;. If it does it will use the return value to
+express the object as a proc. Since &lt;code&gt;&amp;amp;object&lt;/code&gt; can covert procs to blocks the
+&lt;code&gt;&amp;amp;&lt;/code&gt; is going to need the object to first be proc before it does anything. In
+other words, &lt;code&gt;&amp;amp;object&lt;/code&gt; is just shorthand for be &lt;code&gt;&amp;amp;object.to_proc&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h2 id="symbols-to-proc"&gt;Symbol's To Proc&lt;/h2&gt;
+
+&lt;p&gt;Symbol's &lt;code&gt;to_proc&lt;/code&gt; is what allows us to pass it in place of a block. It
+might look a little strange at first, but once you see it used it becomes
+pretty cool.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="ruby"&gt;
+class Symbol
+  def to_proc
+    proc { |obj, *args| obj.send(self, *args) }
+  end
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This returns a proc that takes 2 parameters&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;First is an object that will receive the method.&lt;/li&gt;
+  &lt;li&gt;The second is the arguments that will be passed into the method.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;And when that proc is called&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Sends the original symbol to the object with the arguments.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;This means that &lt;code&gt;:methods.to_proc&lt;/code&gt; will be the equivalent to the following.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="ruby"&gt;def methods_to_proc(obj)
+  obj.send(:methods)
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This results in:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="ruby"&gt;my_little_proc = :methods.to_proc
+# my little proc is ready to call :methods on any object
+
+my_little_proc.call(String)
+# =&amp;gt; returns an array all of String's methods
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id="the-setup"&gt;The Setup&lt;/h2&gt;
+
+&lt;p&gt;Now we're going to be creating a proc from a symbol that can be used to send
+that symbol into any object. In fact, a more fitting name for &lt;code&gt;my_little_proc&lt;/code&gt;
+would be something like &lt;code&gt;call_my_symbol_on&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="ruby"&gt;class String
+  def introduce
+    puts "Hi I'm #{self}"
+  end
+
+  def introduce_to name
+    puts "Hi #{name}, I'm {self}"
+  end
+end
+
+call_my_symbol_on = :introduce.to_proc
+call_my_symbol_on("ryan")
+# =&amp;gt; "Hi I'm ryan"
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Since the proc that &lt;code&gt;to_proc&lt;/code&gt; returned is allowed to take arguments.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="ruby"&gt;call_my_symbol_on = :introduce_to.to_proc
+call_my_symbol_on("ryan", "steve")
+# =&amp;gt; "Hi steve, I'm ryan"
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If you think about it, this is really simple. &lt;code&gt;call_my_symbol_on&lt;/code&gt; is just
+going to call &lt;code&gt;introduce_to&lt;/code&gt; because we used &lt;code&gt;:introduce_to&lt;/code&gt; to
+create it on the first parameter. It is going to send any additional
+parameters as arguments.&lt;/p&gt;
+
+&lt;h2 id="with-map"&gt;With Map&lt;/h2&gt;
+
+&lt;p&gt;Ok, lets get to the real world examples. We often see &lt;code&gt;to_proc&lt;/code&gt; commonly
+used with an enumerable. Lets say we want to introduce a bunch of names.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="ruby"&gt;['ryan', 'steve', 'jill'].map(&amp;amp;:introduce)
+# =&amp;gt; Hi I'm ryan
+# =&amp;gt; Hi I'm steve
+# =&amp;gt; Hi I'm jill
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Is really:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="ruby"&gt;['ryan', 'steve', 'jill'].map(&amp;amp;:introduce.to_proc)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Which can be expressed as:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="ruby"&gt;['ryan', 'steve', 'jill'].map( 
+  &amp;amp; proc{ |obj, *args| obj.send(:introduce, *args) } 
+)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And &amp;amp; is now going to covert that proc into a block. That line can now become:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="ruby"&gt;['ryan', 'steve', 'jill'].map do |obj, *args| 
+  obj.send(:introduce, *args)
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And since map only passes one argument, the element, to its block there
+is really no need to express the additional arguments:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="ruby"&gt;['ryan', 'steve', 'jill'].map do |obj| 
+  obj.send(:introduce)
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Which just is sending the message &lt;code&gt;introduce&lt;/code&gt; our object, the
+same as:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="ruby"&gt;['ryan', 'steve', 'jill'].map do |obj| 
+  obj.introduce
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You can see that by expanding and reducing the &lt;code&gt;&amp;amp;:symbol&lt;/code&gt; notation we can
+end up with a very familiar map and block.&lt;/p&gt;
+
+&lt;h2 id="now-with-some-args"&gt;Now with some *Args&lt;/h2&gt;
+
+&lt;p&gt;So what about &lt;code&gt;*args&lt;/code&gt;? We were able to drop it because map only
+expects a block that will yield to one element. We need to find a common
+Ruby method that yields more than one argument to a block.&lt;/p&gt;
+
+&lt;p&gt;How about &lt;code&gt;inject&lt;/code&gt;? Its block expects two parameters, result and
+element.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Enumerable.inject(start) { |result, element| ... }&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Lets do what we did above, expand the &lt;code&gt;&amp;amp;:+&lt;/code&gt; notation.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="ruby"&gt;# turn
+(1..10).inject(&amp;amp;:+)
+
+# into
+(1..10).inject do |result, element| 
+  result + element
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Here we go&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="ruby"&gt;(1..10).inject(&amp;amp;:+)
+(1..10).inject(&amp;amp;:+.to_proc)
+
+# can be expressed as
+
+(1..10).inject( &amp;amp;proc{ |obj, &amp;#42;args| obj.send(:+, &amp;#42;args) } ) 
+
+# which &amp;amp; will covert into
+
+(1..10).inject( |obj, &amp;#42;args| obj.send(:+, &amp;#42;args) } ) 
+
+# which we can convert to
+
+(1..10).inject do |obj, &amp;#42;args| 
+  obj.send(:+, &amp;#42;args) 
+end
+
+# and then we can just rename our parameters to something more friendly
+
+(1..10).inject do |result, element| 
+  result.send(:+, element) 
+end
+
+# =&amp;gt; 55
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+  </entry>
+</feed>

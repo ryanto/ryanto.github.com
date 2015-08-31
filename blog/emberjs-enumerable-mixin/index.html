@@ -1,0 +1,284 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+
+    <title>EmberJS Enumerable Mixin</title>
+
+    <link href='http://fonts.googleapis.com/css?family=Cabin+Condensed:400,700'
+      rel='stylesheet' type='text/css'>
+
+    <link rel="icon" type="image/png" href="/images/icon.png" />
+
+    <link href="/stylesheets/all.css" rel="stylesheet" type="text/css" />
+  </head>
+
+  <body class="blog blog_emberjs-enumerable-mixin blog_emberjs-enumerable-mixin_index">
+
+      <div class="Blog-post">
+  <h1 class="Blog-post__title">
+    <a href="/blog/emberjs-enumerable-mixin/"
+      >EmberJS Enumerable Mixin</a>
+  </h1>
+
+  <p>An EmberJS Mixin is an object that allows for code to be shared across
+unrelated classes that behave in a similar fashion. This is a powerful
+concept because it allows for easy code reuse and forces well thought
+interface design.</p>
+
+<p></p>
+
+<p>An example of this can be shown with the following data structures:
+arrays, linked lists, and hash maps. Each of these classes will have
+different implementations, but there is common functionality that is
+expected in all three. For example iterating over every element in the
+collection. If iteration can occur than it is reasonable to expect
+functions like map, filter, and reduce to exist. Since these functions
+are higher level concepts they should be abstracted into a library
+that any collection like class can use.</p>
+
+<p>This is exactly what Ember's Enumerable Mixin is. An object that
+implements many of the higher level enumeration functions, like map,
+filter, and reduce. In fact, any class can use the enumerable mixin
+as long as it follows two simple rules:</p>
+
+<ul>
+  <li>The class must have a <code>lengh</code> property.</li>
+  <li>The class must implement <code>nextObject</code>, a function that returns the
+next object in the collection.</li>
+</ul>
+
+<h3 id="linked-list">Linked List</h3>
+
+<p>The following will be a guide to creating a linked list class that mixes
+in enumerable. A linked list is a data structure that represents a
+collection of nodes that point to each other.</p>
+
+<div class="center">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Singly-linked-list.svg/816px-Singly-linked-list.svg.png" width="400" /><br />
+  <small>From <a href="https://en.wikipedia.org/wiki/Linked_list">Wikipedia</a></small>
+  <br /><br />
+</div>
+
+<pre><code>Node = Ember.Object.extend({
+  value: null,
+  next: null
+});
+
+var head = Node.create({
+  value: 12,
+  next: Node.create({
+    value: 99,
+    next: Node.create({
+      value: 37
+    })
+  })
+});
+
+head.get('value') // =&gt; 12
+head.get('next.value') // =&gt; 99
+head.get('next.next.value') // =&gt; 37
+head.get('next.next.next') // =&gt; undefined
+</code></pre>
+
+<h4 id="length-property">Length Property</h4>
+
+<p>In order to calculate the length of a linked list a function just needs
+to keep track of how many times it can go to the next object before
+hitting undefined.</p>
+
+<pre><code>Node = Ember.Object.extend({
+  // ...
+
+  length: function() {
+    var timesWeFoundNext = 1,
+        next = this.get('next');
+
+    while (next) {
+      ++timesWeFoundNext;
+      next = next.get('next');
+    }
+
+    return timesWeFoundNext;
+  }.property('next.length')
+});
+
+var head = Node.create({ value: 'a' });
+head.get('length') // =&gt; 1
+
+head.set('next', Node.create({ value: 'b' }));
+head.get('length') // =&gt; 2
+</code></pre>
+
+<h4 id="next-object">Next Object</h4>
+
+<p>Ember's Enumerable mixin requires next object to have the following
+signature: <code>nextObject(index, previousObject, context)</code> where:</p>
+
+<ul>
+  <li><code>index</code> is the Nth item we are looking for. An index of 0 means the
+first item.</li>
+  <li><code>previousItem</code> is the value that the previous call to <code>nextObject</code>
+returned .</li>
+  <li><code>context</code> is a scratch pad that can be used to save temporary data.</li>
+</ul>
+
+<p>For a linked list <code>nextObject</code> only needs to take advantage of the
+<code>index</code> argument.</p>
+
+<pre><code>Node = Ember.Object.extend({
+  // ...
+
+  nextObject: function(index) {
+    var atNodeNumber = 0,
+        next = this;
+
+    while (atNode &lt; index) {
+      ++atNode;
+      next = next.get('next');
+    }
+
+    return next;
+  } 
+});
+
+var head = Node.create({ value: 'hello' });
+head.nextObject(0).get('value') // =&gt; 'hello'
+
+head.set('next', Node.create({ value: 'world' }));
+head.nextObject(1).get('value') // =&gt; 'world'
+</code></pre>
+
+<h4 id="mixing-in-enumerable">Mixing in Enumerable</h4>
+
+<p>To make a class Enumerable the mixin just needs to be applied to the
+extend method.</p>
+
+<pre><code>Node = Ember.Object.extend(Ember.Enumerable, {
+  length: // ...
+  nextOjbect: // ..
+  next: // ...
+  value: // ...
+});
+</code></pre>
+
+<p>Now any of the functions defined in
+<a href="https://github.com/emberjs/ember.js/blob/master/packages/ember-runtime/lib/mixins/enumerable.js">Ember.Enumerable</a>
+will work for the Node class.</p>
+
+<pre><code>var head = Node.create({
+  value: 1,
+  next: Node.create({
+    value: 2,
+    next: Node.create({
+      value: 3
+    })
+  })
+});
+
+var nodeTimesTwo = function(node) { 
+  return node.get('value') * 2;
+};
+
+head.map(nodeTimesTwo); // =&gt; [2,4,6]
+
+// and
+
+var nodeSum = function(total, node) { 
+  return total + node.get('value');
+};
+
+head.reduce(nodeSum, 0) // =&gt; 6 
+</code></pre>
+
+<h4 id="overriding">Overriding</h4>
+
+<p>Map and reduce functions work great, but when filter is applied to the
+list something strange happens.</p>
+
+<pre><code>head.filter(function(node) {
+  return node.get('value') &lt; 3;
+}); 
+
+// =&gt; [node({ value: 1 }), node({ value: 2})]
+</code></pre>
+
+<p>Although the correct nodes are returned, the data structure is
+incorrect. <code>Node#filter</code> should return nodes expressed as a linked
+list, not an array.</p>
+
+<p>To correct this <code>Node#filter</code> will need to implement its own function
+that returns a list.</p>
+
+<pre><code>Node = Ember.Object.extend(Ember.Enumerable, {
+  // ...
+  
+  filter: function(fn, context) {
+    var arrayOfNodes = this._super.apply(this, arguments),
+        arrayOfValues = arrayOfNodes.mapProperty('value');
+    return Node.createFromArray(arrayOfValues);
+  }
+});
+</code></pre>
+
+<p>This is a nice use of <code>super</code>. It's silly to reinvent <code>filter</code>
+since it already exists, but our filter function should change the
+return value from an array to a list.</p>
+
+<p>The last required function is <code>Node.createFromArray</code>, which creates a
+list from an array of values.</p>
+
+<pre><code>Node.reopenClass({
+  createFromArray: function(array) {
+    var createNode = function(item) {
+          return Node.create({ value: item })
+        },
+        nodes = array.map(createNode),
+        head = nodes[0],
+        linkNodes = function(first, second) {
+          first.set('next', second);
+          return second;
+        };
+
+    nodes.reduce(linkNodes);
+    return head;
+  }
+});
+
+var head = Node.createFromArray([1,2,3,4]);
+
+head.get('value'); // =&gt; 1
+head.get('next.next.value'); // =&gt; 3
+</code></pre>
+
+<p>With these two functions lists can be filtered into brand new lists.</p>
+
+<pre><code>var head = Node.createFromArray([1,2,3,4]);
+
+var filtered = head.filter(function(node) {
+  return node.get('value') % 2 === 0;
+});
+
+filtered.get('length') // =&gt; 2
+filtered.get('next.value') // =&gt; 4
+</code></pre>
+
+</div>
+
+
+    <script src="/javascripts/all.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      hljs.initHighlightingOnLoad();
+
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-42326897-1', 'codingvalue.com');
+      ga('send', 'pageview');
+    </script>
+  </body>
+</html>
