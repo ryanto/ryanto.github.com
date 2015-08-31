@@ -11,7 +11,6 @@
 # Page options, layouts, aliases and proxies
 ###
 
-page "/blog.html", :layout => :blog
 page "/blog/feed.xml", :layout => false
 
 # Per-page layout changes:
@@ -52,7 +51,7 @@ activate :livereload
 activate :blog do |blog|
   blog.paginate = true
   blog.permalink = ":title.html"
-  blog.layout = "layouts/blog"
+  blog.layout = "layouts/layout"
   blog.prefix = "blog"
   Time.zone = "America/New_York"
 end

@@ -1,28 +1,8 @@
-<div class="post-header"
-  style="
-    background-image: url(<%= "#{current_article.url}#{current_article.data.cover}" %>);
-    background-position: <%= 
-      current_article.data.cover_position ? 
-        current_article.data.cover_position : "center center" 
-    %>;
-  ">
+<div class="Blog-post">
+  <h1 class="Blog-post__title">
+    <a href="<%= current_article.url %>"
+      ><%= current_article.title %></a>
+  </h1>
 
-  <div class="row">
-    <div class="small-12 columns">
-      <h1 class="title">
-      </h1>
-    </div>
-  </div>
-
-</div>
-
-<div class="post-content row">
-  <div class="small-12 columns">
-    <h1 class="title">
-      <a href="<%= current_article.url %>"
-        ><%= current_article.title %></a>
-    </h1>
-
-    <%= current_article.body %>
-  </div>
+  <%= current_article.body %>
 </div>
