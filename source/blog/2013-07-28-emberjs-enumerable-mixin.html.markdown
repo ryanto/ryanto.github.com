@@ -25,7 +25,7 @@ implements many of the higher level enumeration functions, like map,
 filter, and reduce. In fact, any class can use the enumerable mixin
 as long as it follows two simple rules:
 
-* The class must have a ``lengh`` property.
+* The class must have a ``length`` property.
 * The class must implement ``nextObject``, a function that returns the
   next object in the collection.
 
