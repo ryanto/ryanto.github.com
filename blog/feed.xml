@@ -14,7 +14,7 @@
     <link rel="alternate" href="http://codingvalue.com/blog/ember-inverse-yield/"/>
     <id>http://codingvalue.com/blog/ember-inverse-yield/</id>
     <published>2015-12-07T00:00:00-05:00</published>
-    <updated>2015-12-08T11:36:00-05:00</updated>
+    <updated>2015-12-08T11:37:25-05:00</updated>
     <author>
       <name>Ryan Toronto</name>
     </author>
@@ -67,7 +67,7 @@ component that looks like this:&lt;/p&gt;
 statement. It suffers from a leaky abstraction, which makes it
 error prone.&lt;/p&gt;
 
-&lt;p&gt;We can design a better a &lt;code&gt;beta-feature&lt;/code&gt; component. In fact,
+&lt;p&gt;We can design a better &lt;code&gt;beta-feature&lt;/code&gt; component. In fact,
 wouldn't this API be nice?&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;{{#beta-feature name="new-post-editor"}}
