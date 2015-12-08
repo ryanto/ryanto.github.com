@@ -14,7 +14,7 @@
     <link rel="alternate" href="http://codingvalue.com/blog/ember-inverse-yield/"/>
     <id>http://codingvalue.com/blog/ember-inverse-yield/</id>
     <published>2015-12-07T00:00:00-05:00</published>
-    <updated>2015-12-07T22:59:15-05:00</updated>
+    <updated>2015-12-08T11:36:00-05:00</updated>
     <author>
       <name>Ryan Toronto</name>
     </author>
@@ -45,9 +45,9 @@ of users. The code would look something like this:&lt;/p&gt;
 
 &lt;p&gt;This works well, but for the software project I'm working on the
 condition for seeing the new editor is a bit more complicated. It
-depends many things like the blog, the post, and the current user. Not
-only that, but if the current user is an admin they can toggle between
-the new and old editor.&lt;/p&gt;
+depends on many things like the blog, the post, and the current user.
+Not only that, but if the current user is an admin they can toggle
+between the new and old editor.&lt;/p&gt;
 
 &lt;p&gt;In order to encapsulate all of this complexity there is a &lt;code&gt;beta-feature&lt;/code&gt;
 component that decides which editor should be shown. You can imagine a
