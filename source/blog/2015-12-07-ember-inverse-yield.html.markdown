@@ -26,9 +26,9 @@ of users. The code would look something like this:
 
 This works well, but for the software project I'm working on the
 condition for seeing the new editor is a bit more complicated. It
-depends many things like the blog, the post, and the current user. Not
-only that, but if the current user is an admin they can toggle between
-the new and old editor.
+depends on many things like the blog, the post, and the current user.
+Not only that, but if the current user is an admin they can toggle
+between the new and old editor.
 
 In order to encapsulate all of this complexity there is a ``beta-feature``
 component that decides which editor should be shown. You can imagine a
