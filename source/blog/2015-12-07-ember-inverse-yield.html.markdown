@@ -47,7 +47,7 @@ This works, but it looks a little funny with the component yielding a
 statement. It suffers from a leaky abstraction, which makes it
 error prone.
 
-We can design a better a `beta-feature` component. In fact,
+We can design a better `beta-feature` component. In fact,
 wouldn't this API be nice?
 
     {{#beta-feature name="new-post-editor"}}
