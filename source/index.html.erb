@@ -2,12 +2,16 @@
 title: Coding Value blog
 ---
 
+<h1>Coding Value blog</h1>
+
 <div class="Blog-post-list">
   <% blog.articles.each_with_index do |article, i| %>
-    <h3 class="Blog-post-list__title">
-      <a href="<%= article.url %>"><%= article.title %></a>
-    </h3>
 
-    <%= article.date.strftime('%b %e %Y') %>
+    <div class="Blog-post-list__date">
+      <%= article.date.strftime('%b %e %Y') %>
+    </div>
+    <%= link_to article.title, article.url,
+        class: 'Blog-post-list__title' %>
+
   <% end %>
 </div>

@@ -5,4 +5,31 @@
   </h1>
 
   <%= current_article.body %>
+
 </div>
+
+<div class="By-line">
+  <%= image_tag "ryan.png",
+      class: "By-line__image",
+      height: 60,
+      width: 60 %>
+
+  <div class="By-line__about">
+    <div class="By-line__about__name">Ryan Toronto</div>
+    <p class="By-line__about__text">
+      Ember developer &amp; Basketball fan
+    </p>
+  </div>
+
+  <div class="By-line__links">
+    <a href="/"
+       class="By-line__link">Blog</a>
+
+    <a href="https://twitter.com/ryantotweets"
+       class="By-line__link">Twitter</a>
+
+    <a href="https://github.com/ryanto"
+       class="By-line__link">Github</a>
+  </div>
+</div>
+

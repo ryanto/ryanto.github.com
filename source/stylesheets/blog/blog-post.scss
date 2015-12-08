@@ -27,6 +27,7 @@
   p, li {
     @include fonts;
     font-size: 1.1em;
+    line-height: 1.35em;
   }
 
   ul {
@@ -37,13 +38,55 @@
   p > code, li > code {
     @include fonts;
     font-weight: normal;
+    background-color: #e0e0e0;
+    font-family: Fixed, monospace;
+    display: inline-block;
+    padding: 2px 5px
   }
 
   pre > code {
     margin-bottom: 1.25em;
     padding: 1em;
     font-weight: normal;
-    line-height: 1.2em;
+    line-height: 1.45em;
     border-radius: 3px;
+  }
+}
+
+.By-line {
+  display: flex;
+  border-top: 1px solid #ccc;
+  margin-top: 2em;
+  padding-top: 2em;
+  margin-bottom: 2em;
+
+  &__image {
+    margin-right: 20px;
+  }
+
+  &__about {
+    &__name {
+      font-weight: bold;
+      font-size: 1.6em;
+    }
+
+    &__text {
+      @include fonts;
+      font-style: italic;
+      margin: 0.4em 0 0 0;
+      color: #666;
+    }
+  }
+
+  &__links {
+    margin-left: auto;
+    justify-content: flex-end;
+  }
+
+  &__link {
+    display: inline-block;
+    margin-left: 20px;
+    color: #333;
+    font-size: 14px;
   }
 }
