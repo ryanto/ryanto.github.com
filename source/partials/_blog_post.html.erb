@@ -4,32 +4,48 @@
       ><%= current_article.title %></a>
   </h1>
 
-  <%= current_article.body %>
+  <div class="By-line">
+    <%= image_tag "ryan.png",
+        class: "By-line__image",
+        height: 25,
+        width: 25 %>
 
+    <div class="By-line__author">
+      Ryan Toronto
+    </div>
+
+    <% if current_article.date %>
+      <div class="By-line__date">
+        <%= current_article.date.strftime("%B %e, %Y") %>
+      </div>
+    <% end %>
+  </div>
+
+  <%= current_article.body %>
 </div>
 
-<div class="By-line">
+<div class="About">
   <%= image_tag "ryan.png",
-      class: "By-line__image",
+      class: "About__image",
       height: 60,
       width: 60 %>
 
-  <div class="By-line__about">
-    <div class="By-line__about__name">Ryan Toronto</div>
-    <p class="By-line__about__text">
+  <div class="About__info">
+    <div class="About__info__name">Ryan Toronto</div>
+    <p class="About__info__text">
       Ember developer &amp; Basketball fan
     </p>
   </div>
 
-  <div class="By-line__links">
+  <div class="About__links">
     <a href="/"
-       class="By-line__link">Blog</a>
+       class="About__link">Blog</a>
 
     <a href="https://twitter.com/ryantotweets"
-       class="By-line__link">Twitter</a>
+       class="About__link">Twitter</a>
 
     <a href="https://github.com/ryanto"
-       class="By-line__link">Github</a>
+       class="About__link">Github</a>
   </div>
 </div>
 
