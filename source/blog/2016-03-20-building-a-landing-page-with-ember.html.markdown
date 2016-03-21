@@ -1,6 +1,6 @@
 ---
 title: Building a landing page with Ember.js
-date: 2016-03-13 13:55 EDT
+date: 2016-03-20 13:55 EDT
 tags: ember, EmberMap
 published: true
 ---
@@ -13,7 +13,7 @@ videos we've got a sign up form on the website.
 We created the landing page using Ember.js and we found a few benefits
 in doing so.
 
-[![](/images/2016-03-13-building-a-landing-page-with-ember/ember-map-landing-pages.png)](https://embermap.com)
+[![](/images/2016-03-20-building-a-landing-page-with-ember/ember-map-landing-pages.png)](https://embermap.com)
 
 ### Deployment
 
