@@ -2,7 +2,7 @@
 title: Building a landing page with Ember.js
 date: 2016-03-13 13:55 EDT
 tags: ember, EmberMap
-published: false
+published: true
 ---
 
 Sam and I just published a landing page for
