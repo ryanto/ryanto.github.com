@@ -5,7 +5,7 @@
   <id>http://codingvalue.com/blog</id>
   <link href="http://codingvalue.com/blog"/>
   <link href="http://codingvalue.com/blog/feed.xml" rel="self"/>
-  <updated>2016-03-13T13:55:00-04:00</updated>
+  <updated>2016-03-20T13:55:00-04:00</updated>
   <author>
     <name>Ryan Toronto</name>
   </author>
@@ -13,8 +13,8 @@
     <title>Building a landing page with Ember.js</title>
     <link rel="alternate" href="http://codingvalue.com/blog/building-a-landing-page-with-ember/"/>
     <id>http://codingvalue.com/blog/building-a-landing-page-with-ember/</id>
-    <published>2016-03-13T13:55:00-04:00</published>
-    <updated>2016-03-20T22:01:14-04:00</updated>
+    <published>2016-03-20T13:55:00-04:00</published>
+    <updated>2016-03-20T22:03:03-04:00</updated>
     <author>
       <name>Ryan Toronto</name>
     </author>
@@ -32,7 +32,7 @@ videos we've got a sign up form on the website.&lt;/p&gt;
 &lt;p&gt;We created the landing page using Ember.js and we found a few benefits
 in doing so.&lt;/p&gt;
 
-&lt;p&gt;&lt;a href="https://embermap.com"&gt;&lt;img alt="" src="/images/2016-03-13-building-a-landing-page-with-ember/ember-map-landing-pages.png" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://embermap.com"&gt;&lt;img alt="" src="/images/2016-03-20-building-a-landing-page-with-ember/ember-map-landing-pages.png" /&gt;&lt;/a&gt;&lt;/p&gt;
 
 &lt;h3 id="deployment"&gt;Deployment&lt;/h3&gt;
 
