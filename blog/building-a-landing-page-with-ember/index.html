@@ -1,0 +1,162 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+
+    <title>Building a landing page with Ember.js</title>
+
+    <link href='http://fonts.googleapis.com/css?family=Cabin+Condensed:400,700'
+      rel='stylesheet' type='text/css'>
+
+    <link rel="icon" type="image/png" href="/images/icon.png" />
+
+    <link href="/stylesheets/all.css" rel="stylesheet" type="text/css" />
+  </head>
+
+  <body class="blog blog_building-a-landing-page-with-ember blog_building-a-landing-page-with-ember_index">
+
+      <div class="Blog-post">
+  <h1 class="Blog-post__title">
+    <a href="/blog/building-a-landing-page-with-ember/"
+      >Building a landing page with Ember.js</a>
+  </h1>
+
+  <div class="By-line">
+    <img class="By-line__image" height="25" width="25" src="/images/ryan.png" />
+
+    <div class="By-line__author">
+      Ryan Toronto
+    </div>
+
+      <div class="By-line__date">
+        March 13, 2016
+      </div>
+  </div>
+
+  <p>Sam and I just published a landing page for
+<a href="https://embermap.com">EmberMap</a>, a series of always up to date Ember
+videos that help teams stay current.  If you'd like early access to our
+videos we've got a sign up form on the website.</p>
+
+<p>We created the landing page using Ember.js and we found a few benefits
+in doing so.</p>
+
+<p><a href="https://embermap.com"><img alt="" src="/images/2016-03-13-building-a-landing-page-with-ember/ember-map-landing-pages.png" /></a></p>
+
+<h3 id="deployment">Deployment</h3>
+
+<p>Deployment is so easy. We're using
+<a href="http://ember-cli.com/ember-cli-deploy/">ember-cli-deploy</a> to deploy the
+application to CloudFront. It took about 10 lines of code to set this up
+and now all of our content is being served from a CDN with edge nodes on
+five continents.</p>
+
+<p>We're serving our index.html from the CDN as well, which comes with a
+downside: Redeploys take about 15 minutes since we need to do cache
+invalidation. However, the landing page content rarely changes, about
+once every two days so far, so this is acceptable. When we get to a
+point where we need to deploy multiple times a day we'll reconfigure
+ember-cli-deploy to use another strategy for our index.html, but keep
+the rest of our deployment pipeline the same. These sort of changes are
+minimal and that keeps them easy.</p>
+
+<h3 id="iteration">Iteration</h3>
+
+<p>Currently our website is only a landing page, but we've got plans to
+turn it into an application. However, there's no magic moment when we
+suddenly have an application. By using Ember we can incrementally add
+features and improve content over time. In a couple of weeks we'll be
+adding an interactive video player to the home page. When that time
+comes we won't have to throw away any code and start over, we'll simply
+add our video player component to the home page.</p>
+
+<h3 id="addons">Addons</h3>
+
+<p>We wanted to collect metrics for how people interact with the site. This
+enables us to see how visitors progress through our funnel as well as A/B
+test different content. Setting this up was as easy thanks to
+<a href="https://github.com/poteto/ember-metrics">ember-metrics</a>.</p>
+
+<p>We also wanted to add animations, <a href="https://github.com/ember-animation/liquid-fire">liquid
+fire</a> made that easy.</p>
+
+<p><a href="https://github.com/mitchlloyd/ember-screen">Ember screen</a> made it easy
+for us to use different content on different devices and screen sizes.
+No media queries or CSS hacks required for responsive content.</p>
+
+<p>When I look at our page most of the hard-to-code things are handled by
+addons. This lets us focus on content and allows us to publish quickly.</p>
+
+<p>As we add more features to the page we'll look to addons to help us.
+The Ember community does an amazing job keeping addons simple, well
+documented, up to date, and developer friendly.</p>
+
+<h2 id="trade-offs">Trade offs</h2>
+
+<p>Of course there are trade offs when using Ember to build your landing page.
+Here's a few of the downsides we had to consider when building the
+landing page.</p>
+
+<p>Ember is a JavaScript framework and that means the browser has to
+download, parse, and execute JS code before any content is rendered.
+This is added overhead when compared to serving a landing page as static
+HTML. Our site is targeted at developers with fast Internet and modern
+browsers, so we felt like this trade off was an acceptable one.</p>
+
+<p>Ember isn't something you learn in a day. We've built many Ember apps in
+the last four years so creating this one only took a few hours. Without
+experience it's easy to run into questions that are hard to answer.
+This sort of complexity significantly slow down development and should
+always be considered when picking a tool.</p>
+
+<p>All programming decisions involve some sort of trade off to be made.
+While these trade offs might be non starters for your landing page we
+felt the benefit of addons and feature iteration made them well worth
+it.</p>
+
+<p>If you're excited about learning how to use Ember in a team environment
+head on over to <a href="https://embermap.com">embermap.com</a>.</p>
+
+
+</div>
+
+<div class="About">
+  <img class="About__image" height="60" width="60" src="/images/ryan.png" />
+
+  <div class="About__info">
+    <div class="About__info__name">Ryan Toronto</div>
+    <p class="About__info__text">
+      Ember developer &amp; Basketball fan
+    </p>
+  </div>
+
+  <div class="About__links">
+    <a href="/"
+       class="About__link">Blog</a>
+
+    <a href="https://twitter.com/ryantotweets"
+       class="About__link">Twitter</a>
+
+    <a href="https://github.com/ryanto"
+       class="About__link">Github</a>
+  </div>
+</div>
+
+
+
+    <script src="/javascripts/all.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      hljs.initHighlightingOnLoad();
+
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-42326897-1', 'codingvalue.com');
+      ga('send', 'pageview');
+    </script>
+  </body>
+</html>

@@ -387,30 +387,31 @@ table {
   color: #238E23;
   margin-bottom: 1em; }
 /* line 8, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
-.Blog-post__title {
-  font-size: 2.5em;
-  text-align: center; }
-  /* line 12, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
-  .Blog-post__title a {
-    color: black;
-    text-decoration: none; }
-/* line 18, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
 .Blog-post a {
   color: #238E23;
   text-decoration: underline; }
-  /* line 22, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
+  /* line 12, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
   .Blog-post a.button {
     text-decoration: none; }
-/* line 27, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
+/* line 17, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
+.Blog-post__title {
+  font-size: 2.5em;
+  text-align: center;
+  margin-bottom: 0.4em; }
+  /* line 22, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
+  .Blog-post__title a {
+    color: black;
+    text-decoration: none; }
+/* line 28, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
 .Blog-post p, .Blog-post li {
   font-family: Georgia,Arial,sans-serif;
   font-size: 1.1em;
   line-height: 1.35em; }
-/* line 33, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
+/* line 34, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
 .Blog-post ul {
   font-family: Georgia,Arial,sans-serif;
   padding-left: 2em; }
-/* line 38, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
+/* line 39, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
 .Blog-post p > code, .Blog-post li > code {
   font-family: Georgia,Arial,sans-serif;
   font-weight: normal;
@@ -418,40 +419,59 @@ table {
   font-family: Fixed, monospace;
   display: inline-block;
   padding: 2px 5px; }
-/* line 47, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
+/* line 48, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
 .Blog-post pre > code {
   margin-bottom: 1.25em;
   padding: 1em;
   font-weight: normal;
   line-height: 1.45em;
   border-radius: 3px; }
-
 /* line 56, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
+.Blog-post img {
+  max-width: 100%; }
+
+/* line 61, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
 .By-line {
   display: flex;
-  border-top: 1px solid #ccc;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 1.4em; }
+  /* line 68, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
+  .By-line__author {
+    margin-left: 0.5em;
+    font-weight: bold; }
+  /* line 73, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
+  .By-line__date {
+    color: #999;
+    font-style: italic;
+    margin-left: 1em; }
+
+/* line 80, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
+.About {
+  display: flex;
   margin-top: 2em;
   padding-top: 2em;
-  margin-bottom: 2em; }
-  /* line 63, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
-  .By-line__image {
+  margin-bottom: 2em;
+  border-top: 1px solid #ccc; }
+  /* line 87, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
+  .About__image {
     margin-right: 20px; }
-  /* line 68, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
-  .By-line__about__name {
+  /* line 92, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
+  .About__info__name {
     font-weight: bold;
     font-size: 1.6em; }
-  /* line 73, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
-  .By-line__about__text {
+  /* line 97, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
+  .About__info__text {
     font-family: Georgia,Arial,sans-serif;
     font-style: italic;
     margin: 0.4em 0 0 0;
     color: #666; }
-  /* line 81, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
-  .By-line__links {
+  /* line 105, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
+  .About__links {
     margin-left: auto;
     justify-content: flex-end; }
-  /* line 86, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
-  .By-line__link {
+  /* line 110, /Users/ryan/projects/ryanto.github.com/source/stylesheets/blog/blog-post.scss */
+  .About__link {
     display: inline-block;
     margin-left: 20px;
     color: #333;
