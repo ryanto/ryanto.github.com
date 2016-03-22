@@ -14,7 +14,7 @@
     <link rel="alternate" href="http://codingvalue.com/blog/building-a-landing-page-with-ember/"/>
     <id>http://codingvalue.com/blog/building-a-landing-page-with-ember/</id>
     <published>2016-03-20T13:55:00-04:00</published>
-    <updated>2016-03-20T22:03:03-04:00</updated>
+    <updated>2016-03-21T23:57:51-04:00</updated>
     <author>
       <name>Ryan Toronto</name>
     </author>
@@ -36,7 +36,7 @@ in doing so.&lt;/p&gt;
 
 &lt;h3 id="deployment"&gt;Deployment&lt;/h3&gt;
 
-&lt;p&gt;Deployment is so easy. We're using
+&lt;p&gt;Deployment was really easy. We're using
 &lt;a href="http://ember-cli.com/ember-cli-deploy/"&gt;ember-cli-deploy&lt;/a&gt; to deploy the
 application to CloudFront. It took about 10 lines of code to set this up
 and now all of our content is being served from a CDN with edge nodes on
@@ -97,7 +97,7 @@ browsers, so we felt like this trade off was an acceptable one.&lt;/p&gt;
 &lt;p&gt;Ember isn't something you learn in a day. We've built many Ember apps in
 the last four years so creating this one only took a few hours. Without
 experience it's easy to run into questions that are hard to answer.
-This sort of complexity significantly slow down development and should
+This sort of complexity significantly slows down development and should
 always be considered when picking a tool.&lt;/p&gt;
 
 &lt;p&gt;All programming decisions involve some sort of trade off to be made.
@@ -105,9 +105,8 @@ While these trade offs might be non starters for your landing page we
 felt the benefit of addons and feature iteration made them well worth
 it.&lt;/p&gt;
 
-&lt;p&gt;If you're excited about learning how to use Ember in a team environment
-head on over to &lt;a href="https://embermap.com"&gt;embermap.com&lt;/a&gt;.&lt;/p&gt;
-
+&lt;p&gt;If you're excited about learning how to use Ember in a team environment,
+visit &lt;a href="https://embermap.com"&gt;EmberMap.com&lt;/a&gt; and sign up for early access.&lt;/p&gt;
 </content>
   </entry>
   <entry>
