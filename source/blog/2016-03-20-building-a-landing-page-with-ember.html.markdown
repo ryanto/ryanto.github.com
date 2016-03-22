@@ -17,7 +17,7 @@ in doing so.
 
 ### Deployment
 
-Deployment is so easy. We're using
+Deployment was really easy. We're using
 [ember-cli-deploy](http://ember-cli.com/ember-cli-deploy/) to deploy the
 application to CloudFront. It took about 10 lines of code to set this up
 and now all of our content is being served from a CDN with edge nodes on
@@ -78,7 +78,7 @@ browsers, so we felt like this trade off was an acceptable one.
 Ember isn't something you learn in a day. We've built many Ember apps in
 the last four years so creating this one only took a few hours. Without
 experience it's easy to run into questions that are hard to answer.
-This sort of complexity significantly slow down development and should
+This sort of complexity significantly slows down development and should
 always be considered when picking a tool.
 
 All programming decisions involve some sort of trade off to be made.
@@ -86,6 +86,5 @@ While these trade offs might be non starters for your landing page we
 felt the benefit of addons and feature iteration made them well worth
 it.
 
-If you're excited about learning how to use Ember in a team environment
-head on over to [embermap.com](https://embermap.com).
-
+If you're excited about learning how to use Ember in a team environment,
+visit [EmberMap.com](https://embermap.com) and sign up for early access.
